@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'événement{% endblock %}
+
+{% block body %}
+    <h1>Modifier l'événement</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">Enregistrer les modifications</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_evenement_liste') }}">← Retour à la liste</a>
+{% endblock %}

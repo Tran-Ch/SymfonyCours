@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container py-5">
+  <h1 class="text-center mb-4">Découvrez votre style de voyage</h1>
+
+  <div class="progress mb-4">
+    <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+  </div>
+
+  <div id="quiz-container"></div>
+
+  <div class="text-center mt-4">
+    <button id="prev-btn" class="btn btn-secondary btn-lg me-2" disabled>Précédent</button>
+    <button id="next-btn" class="btn btn-primary btn-lg">Suivant</button>
+  </div>
+</div>
+
+<style>
+  .fade-slide { animation: fadeSlide 0.5s ease-in-out; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+</style>
+
+<script>
+const questions = {{ questions|json_encode|raw }};
+const resultsData = {{ results|json_encode|raw }};
+let currentIndex = 0;
+let answers = Array(questions.length).fill(null);
+
+const container = document.getElementById('quiz-container');
+const progressBar = document.getElementById('progress-bar');
+const nextBtn = document.getElementById('next-btn');
+const prevBtn = document.getElementById('prev-btn');
+
+function showQuestion() {
+  if(currentIndex >= questions.length) {
+    showResult();
+    return;
+  }
+  const q = questions[currentIndex];
+  let html = `<div class="card p-3 fade-slide"><p><b>${currentIndex+1}. ${q.q}</b></p>`;
+  q.options.forEach(opt => {
+    const checked = answers[currentIndex]===opt.val ? 'checked' : '';
+    html += `<div class="form-check">
+               <input class="form-check-input" type="radio" name="q${currentIndex}" value="${opt.val}" ${checked}>
+               <label class="form-check-label">${opt.label}</label>
+             </div>`;
+  });
+  html += `</div>`;
+  container.innerHTML = html;
+  progressBar.style.width = ((currentIndex)/questions.length*100) + "%";
+  prevBtn.disabled = currentIndex === 0;
+  nextBtn.textContent = currentIndex === questions.length-1 ? 'Voir le résultat' : 'Suivant';
+}
+
+function showResult() {
+  let scores = {"adventure":0,"culture":0,"relax":0};
+  answers.forEach(a => { if(a) scores[a]++; });
+  const maxType = Object.keys(scores).reduce((a,b)=>scores[a]>=scores[b]?a:b);
+
+  container.innerHTML = `
+    <div class="card shadow-lg p-4 text-center fade-slide">
+      <h2>Quelle région du Vietnam souhaitez-vous explorer ?</h2>
+      <button class="btn btn-outline-primary m-2" onclick="showFinalResult('${maxType}','nord')">Nord</button>
+      <button class="btn btn-outline-warning m-2" onclick="showFinalResult('${maxType}','centre')">Centre</button>
+      <button class="btn btn-outline-success m-2" onclick="showFinalResult('${maxType}','sud')">Sud</button>
+    </div>`;
+  progressBar.style.width = "100%";
+}
+
+function showFinalResult(type, region) {
+  const res = resultsData[type][region];
+  container.innerHTML = `<div class="card shadow-lg p-4 text-center fade-slide">
+                           <h1>${res.title}</h1>
+                           <img src="${res.img}" class="img-fluid rounded mb-4" style="max-height:300px;object-fit:cover;">
+                           <p class="lead">Destinations suggérées : <b>${res.places}</b></p>
+                           <button onclick="location.reload()" class="btn btn-success mt-3">Recommencer</button>
+                         </div>`;
+}
+
+nextBtn.addEventListener('click', () => {
+  const selected = document.querySelector(`input[name="q${currentIndex}"]:checked`);
+  if(!selected) { alert('Veuillez choisir une réponse !'); return; }
+  answers[currentIndex] = selected.value;
+  currentIndex++;
+  showQuestion();
+});
+
+prevBtn.addEventListener('click', () => {
+  if(currentIndex > 0) currentIndex--;
+  showQuestion();
+});
+
+showQuestion();
+</script>
+{% endblock %}

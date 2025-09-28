@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'événement{% endblock %}
+
+{% block body %}
+    <h1>{{ evenement.nom }}</h1>
+
+    <p><strong>Date :</strong> {{ evenement.dateDebut|date('d/m/Y H:i') }}</p>
+    <p><strong>Date de fin :</strong> {{ evenement.dateFin|date('d/m/Y H:i') }}</p>
+    <p><strong>Lieu :</strong> {{ evenement.lieu }}</p>
+    <p><strong>Catégorie :</strong> {{ evenement.categorie }}</p>
+    <p><strong>Prix :</strong> {{ evenement.prix }}€</p>
+
+    {% if evenement.image %}
+        <p><img src="{{ asset('uploads/images/' ~ evenement.image) }}" alt="Image de l'événement" style="max-width:300px;"></p>
+    {% endif %}
+
+    <a href="{{ path('app_evenement_liste') }}">← Retour à la liste</a>
+    <a href="{{ path('app_evenement_edit', {id: evenement.id}) }}">✏️ Modifier</a>
+
+    <form method="post" action="{{ path('app_evenement_delete', {id: evenement.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet événement ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+        <button class="btn btn-danger">🗑️ Supprimer</button>
+    </form>
+{% endblock %}

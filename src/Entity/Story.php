@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\StoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,6 +21,22 @@ class Story
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
+
+    
+    /**
+     * @var Collection<int, Evenement>
+     */
+    #[ORM\ManyToMany(targetEntity: Evenement::class, inversedBy: 'stories')]
+    private Collection $evenements;
+
+    #[ORM\ManyToOne(inversedBy: 'stories')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $utilisateur = null;
+
+    public function __construct()
+    {
+        $this->evenements = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -52,6 +70,43 @@ class Story
     public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Evenement>
+     */
+    public function getEvenements(): Collection
+    {
+        return $this->evenements;
+    }
+
+    public function addEvenement(Evenement $evenement): static
+    {
+        if (!$this->evenements->contains($evenement)) {
+            $this->evenements->add($evenement);
+        }
+
+        return $this;
+    }
+
+    public function removeEvenement(Evenement $evenement): static
+    {
+        $this->evenements->removeElement($evenement);
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

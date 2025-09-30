@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle histoire{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Créer une nouvelle histoire</h1>
+        
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    
+                    {# Champ Utilisateur (caché si l'utilisateur est connecté) #}
+                    {% if not app.user %}
+                        <div class="mb-3">
+                            {{ form_label(form.utilisateur, 'Auteur', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.utilisateur, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.utilisateur) }}
+                        </div>
+                    {% else %}
+                        {{ form_widget(form.utilisateur, {'attr': {'class': 'd-none'}}) }}
+                    {% endif %}
+                    
+                    {# Champ Contenu #}
+                    <div class="mb-3">
+                        {{ form_label(form.contenu, 'Votre histoire', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.contenu, {'attr': {
+                            'class': 'form-control',
+                            'rows': 8,
+                            'placeholder': 'Racontez votre histoire ici...'
+                        }}) }}
+                        <div class="form-text">Partagez votre expérience avec la communauté</div>
+                        {{ form_errors(form.contenu) }}
+                    </div>
+                    
+                    {# Champ Événements #}
+                    <div class="mb-4">
+                        {{ form_label(form.evenements, 'Événements associés', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.evenements, {'attr': {
+                            'class': 'form-select',
+                            'data-placeholder': 'Sélectionnez un ou plusieurs événements'
+                        }}) }}
+                        <div class="form-text">Maintenez la touche Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs événements</div>
+                        {{ form_errors(form.evenements) }}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ path('app_index') }}" class="btn btn-outline-secondary me-md-2">Annuler</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Publier l'histoire
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Style pour améliorer l'apparence des champs de formulaire */
+        .form-control:focus, .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        /* Style pour les erreurs de formulaire */
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: #dc3545;
+            padding-right: calc(1.5em + 0.75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: #dc3545;
+        }
+        
+        /* Style pour le bouton de soumission */
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+        
+        /* Style pour les sélecteurs multiples */
+        select[multiple] {
+            min-height: 150px;
+        }
+    </style>
+{% endblock %}

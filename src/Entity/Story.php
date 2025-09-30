@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StoryRepository::class)]
 class Story
@@ -16,10 +17,18 @@ class Story
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $auteurld = null;
+    // Suppression du champ auteurld redondant car nous avons déjà la relation utilisateur
+    // #[ORM\Column]
+    // private ?int $auteurld = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'Le contenu ne peut pas être vide')]
+    #[Assert\Length(
+        min: 10,
+        max: 5000,
+        minMessage: 'Le contenu doit faire au moins {{ limit }} caractères',
+        maxMessage: 'Le contenu ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $contenu = null;
 
     
@@ -31,6 +40,7 @@ class Story
 
     #[ORM\ManyToOne(inversedBy: 'stories')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Un auteur doit être sélectionné', groups: ['anonymous'])]
     private ?Utilisateur $utilisateur = null;
 
     /**
@@ -53,18 +63,6 @@ class Story
     public function setId(int $id): static
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getAuteurld(): ?int
-    {
-        return $this->auteurld;
-    }
-
-    public function setAuteurld(int $auteurld): static
-    {
-        $this->auteurld = $auteurld;
 
         return $this;
     }

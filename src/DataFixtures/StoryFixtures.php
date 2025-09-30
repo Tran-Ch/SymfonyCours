@@ -23,9 +23,20 @@ class StoryFixtures extends Fixture
 
         for ($i = 0; $i < 20; $i++) {
             $story = new Story();
-            $story->setContenu($faker->sentence(10));
-            $story->setAuteurld($faker->randomElement($utilisateurs));
+            $story->setContenu($faker->paragraphs(3, true)); // Plus de contenu réaliste
+            $story->setUtilisateur($faker->randomElement($utilisateurs));
 
+            // Ajouter des événements aléatoires (entre 0 et 3 événements par histoire)
+            $evenements = $manager->getRepository(\App\Entity\Evenement::class)->findAll();
+            if (!empty($evenements)) {
+                $nbEvenements = mt_rand(0, min(3, count($evenements)));
+                $selectedEvenements = $faker->randomElements($evenements, $nbEvenements);
+                
+                foreach ($selectedEvenements as $evenement) {
+                    $story->addEvenement($evenement);
+                }
+            }
+            
             $manager->persist($story);
         }
 

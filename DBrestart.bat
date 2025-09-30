@@ -6,5 +6,5 @@ symfony console doctrine:database:create
 del migrations\Ve*
 symfony console make:migration --no-interaction
 symfony console doctrine:migration:migrate --no-interaction
-@REM symfony console doctrine:fixtures:load --no-interaction
+symfony console doctrine:fixtures:load --no-interaction
 

@@ -50,10 +50,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Evenement::class, inversedBy: 'utilisateurs')]
     private Collection $evenements;
 
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'utilisateur')]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->stories = new ArrayCollection();
         $this->evenements = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -199,6 +206,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeEvenement(Evenement $evenement): static
     {
         $this->evenements->removeElement($evenement);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUtilisateur() === $this) {
+                $comment->setUtilisateur(null);
+            }
+        }
 
         return $this;
     }

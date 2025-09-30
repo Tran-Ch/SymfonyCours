@@ -2,6 +2,9 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Reservation;
+use App\Entity\Utilisateur;
+use App\Entity\Evenement;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 

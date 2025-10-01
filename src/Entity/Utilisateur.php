@@ -56,11 +56,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'utilisateur')]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'utilisateur')]
+    private Collection $reservations;
+
     public function __construct()
     {
         $this->stories = new ArrayCollection();
         $this->evenements = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int

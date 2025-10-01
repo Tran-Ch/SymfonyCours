@@ -9,13 +9,17 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class ReservationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('dateReservation')
+            ->add('dateReservation', DateType::class, [
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+            ])
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
                 'choice_label' => 'id',

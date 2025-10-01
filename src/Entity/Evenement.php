@@ -54,7 +54,6 @@ class Evenement
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'evenements')]
     private Collection $utilisateurs;
 
-    
     public function __construct()
     {
         $this->reservations = new ArrayCollection();

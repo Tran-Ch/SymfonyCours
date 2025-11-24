@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Culture du Nord{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    main {
+      margin-top: 130px;
+      padding: 40px 20px 60px 20px;
+      background-color: #d4c095;
+    }
+
+    .grid-page { max-width: 1200px; margin: 0 auto; }
+
+    .grid-page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .grid-page-header h1 {
+      font-size: 26px;
+      color: #5c3a1c;
+      margin: 0;
+    }
+
+    .grid-wrapper {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-rows: 200px;
+      gap: 20px;
+    }
+
+    .grid-card {
+      background-color: #e5e39b;
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    @media (max-width: 992px) {
+      .grid-wrapper {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 576px) {
+      main {
+        margin-top: 110px;
+        padding: 25px 10px 40px 10px;
+      }
+      .grid-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <section class="grid-page">
+    <div class="grid-page-header">
+      <h1>DÉCOUVREZ LA CULTURE DU NORD</h1>
+      <a href="{{ path('app_nord') }}" class="btn btn-long">← Retour à la carte du Nord</a>
+    </div>
+
+    <div class="grid-wrapper">
+      {% for i in 1..6 %}
+        <article class="grid-card">
+          <strong>Thế mạnh văn hoá {{ i }}</strong>
+          <p style="font-size:13px; margin-top:8px;">
+            Âm nhạc dân tộc, lễ hội, phong tục, kiến trúc… Bạn điền chi tiết sau.
+          </p>
+          <div style="font-size:12px; text-align:right;">♥ 0 likes – 0 comments</div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

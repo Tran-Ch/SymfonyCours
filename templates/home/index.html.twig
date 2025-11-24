@@ -1,20 +1,153 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Trang chủ{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+  <!-- phần hình nền lớn với dòng chữ trung tâm -->
+  <section class="hero"
+           style="background-image: url('{{ asset('home/HaLong.jpeg') }}');">
+    <div class="hero-text">
+      <h1>VOYAGE INSPIRÉ À TRAVERS L'ÂME ET LA MÉMOIRE D'ORIGINE</h1>
+    </div>
+  </section>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/xampp/htdocs/SymfonyCours/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/xampp/htdocs/SymfonyCours/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+  <!-- phần hai hình ảnh nhỏ với nút điều hướng trên nền tối -->
+  <section class="bottom-section">
+    <div class="content-row">
+      <div class="content-block">
+        <img src="{{ asset('home/lan-bien-nha-trang-o-dau.png') }}" alt="Scène sous-marine">
+        <a href="decouverte.html" class="btn">Partez à la découverte</a>
+      </div>
+      <div class="content-block">
+        <img src="{{ asset('home/hue.jpg') }}" alt="Architecture traditionnelle">
+        <a href="#" id="btnIntroVideo" class="btn btn-long">Découvrez notre vidéo d'introduction</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Khung video ẩn -->
+  <!-- Overlay video – ẩn mặc định -->
+  <div id="videoOverlay" class="video-overlay">
+    <div class="video-modal">
+      <button id="closeVideoBtn" class="video-close-btn">✕</button>
+
+      <div class="video-modal-inner">
+        <iframe
+          id="introVideo"
+          src="https://www.youtube.com/embed/TgIgpLesnp8"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- phần giới thiệu mở rộng với màu nền mới -->
+  <section class="extended-section">
+    <div class="extended-content">
+      <section class="ban-doc-section">
+        <div class="ban-doc-wrapper">
+          <div class="ban-doc-image">
+            <img src="{{ asset('home/Thac_Ban_Doc.png') }}" alt="Thác Bản Dốc">
+          </div>
+          <div class="ban-doc-text">
+            <div class="ban-doc-text-inner">
+              <h2>L’UNE DES DESTINATIONS LES PLUS FASCINANTES D’ASIE</h2>
+              <div class="ban-doc-middle">
+                <p>
+                  Situé au cœur de l’Asie du Sud-Est, le Vietnam incarne une harmonie parfaite entre la splendeur naturelle, la richesse culturelle et l’hospitalité chaleureuse de son peuple. Des plages infinies de Nha Trang et Phú Quốc aux trésors classés au patrimoine mondial comme la baie d’Ha Long ou la vieille ville de Hội An, chaque région dévoile un charme unique. Les voyageurs peuvent explorer les montagnes verdoyantes de Sapa, savourer la cuisine de rue authentique à Hanoï ou s’immerger dans l’effervescence urbaine de Hô Chi Minh-Ville.
+                  Le Vietnam séduit non seulement par ses paysages, mais aussi par son accessibilité, sa sécurité et la diversité de ses expériences – allant du luxe raffiné aux aventures hors des sentiers battus. Grâce à des infrastructures modernes et à un secteur touristique en plein essor, le pays s’impose comme une destination de choix pour ceux qui souhaitent découvrir l’Asie dans toute sa richesse et son authenticité.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Phần Sơn Đoòng: chữ trái – hình phải -->
+      <section class="son-dong-section">
+        <div class="son-dong-wrapper">
+          <!-- Hình Sơn Đoòng (bên phải nhờ flex-direction: row-reverse) -->
+          <div class="ban-doc-image">
+            <img src="{{ asset('home/SonDong.png') }}" alt="Grotte Sơn Đoòng">
+          </div>
+
+          <!-- Chữ (bên trái) – dùng lại style ban-doc-text -->
+          <div class="ban-doc-text">
+            <div class="ban-doc-text-inner">
+              <h2>L’UNE DES DESTINATIONS LES PLUS FASCINANTES D’ASIE</h2>
+              <div class="ban-doc-middle">
+                <p>
+                  Au cœur de l’Asie du Sud-Est, le Vietnam se révèle comme une destination incontournable pour les voyageurs en quête d’authenticité, de diversité et de magie. Ce pays fascinant offre une nature spectaculaire, des plages paradisiaques de Phú Quốc aux montagnes embrumées de Sapa, sans oublier les paysages enchanteurs de la baie d’Ha Long. Son patrimoine culturel, riche de plus de 4 000 ans d’histoire, s’exprime à travers des sites classés par l’UNESCO tels que Hué et Hoi An.
+                  La gastronomie vietnamienne, savoureuse et colorée, séduit les palais du monde entier avec ses plats emblématiques comme le phở ou le bánh mì. Accessible et abordable, le Vietnam propose une palette d’expériences variées – du luxe raffiné aux escapades authentiques – dans un cadre sûr et accueillant. Porté par des infrastructures touristiques modernes et l’hospitalité légendaire de ses habitants, le Vietnam s’impose comme le choix idéal pour découvrir l’Asie autrement, với intensité et émotion.
+                </p>
+              </div>
+              <a href="decouverte-sondong.html" class="btn">Découvrir davantage</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    window.addEventListener('load', () => {
+      const btnIntroVideo = document.getElementById('btnIntroVideo');
+      const videoOverlay  = document.getElementById('videoOverlay');
+      const closeVideoBtn = document.getElementById('closeVideoBtn');
+      const videoFrame    = document.getElementById('introVideo');
+
+      // Hàm mở popup
+      function openVideo() {
+        if (!videoOverlay) return;
+        videoOverlay.style.display = 'flex';   // hiện overlay + căn giữa
+        document.body.style.overflow = 'hidden'; // khóa scroll nền (tùy thích)
+      }
+
+      // Hàm đóng popup + dừng video
+      function closeVideo() {
+        if (!videoOverlay || !videoFrame) return;
+
+        videoOverlay.style.display = 'none';
+        document.body.style.overflow = ''; // mở lại scroll
+
+        // Dừng video: reset src
+        const oldSrc = videoFrame.src;
+        videoFrame.src = '';
+        videoFrame.src = oldSrc;
+      }
+
+      // Bấm nút “Découvrez notre vidéo d’introduction”
+      if (btnIntroVideo) {
+        btnIntroVideo.addEventListener('click', (event) => {
+          event.preventDefault();
+          openVideo();
+        });
+      }
+
+      // Bấm nút X
+      if (closeVideoBtn) {
+        closeVideoBtn.addEventListener('click', () => {
+          closeVideo();
+        });
+      }
+
+      // Bấm ra ngoài (vùng overlay) cũng đóng
+      if (videoOverlay) {
+        videoOverlay.addEventListener('click', (event) => {
+          // chỉ đóng khi click đúng overlay, không phải click vào khung video
+          if (event.target === videoOverlay) {
+            closeVideo();
+          }
+        });
+      }
+    });
+  </script>
 {% endblock %}

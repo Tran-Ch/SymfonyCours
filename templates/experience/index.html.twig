@@ -1,6 +1,360 @@
+{# templates/experience/index.html.twig #}
 {% extends "base.html.twig" %}
 
-{% block body %}
-hello
+{% block title %}Carte du Vietnam interactive{% endblock %}
 
-{% endblock body %}
+{# CSS riêng cho trang bản đồ #}
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif; /* font chữ chung */
+      background-color: rgba(36, 75, 68, 0.38); /* nền của trang map */
+    }
+
+    /* trên trang map ta không cần header fixed như trang index */
+    header {
+      position: relative;
+    }
+
+    /* vì header không fixed nữa nên bỏ margin-top mặc định của main trong base */
+    main {
+      margin-top: 0;
+      padding-top: 20px;
+      background-color: transparent;
+      text-align: left;
+    }
+
+    /* ===== PHẦN MAP + INFO ===== */
+    .map-container {
+      display: flex;
+      background-color: transparent; /* XOÁ NỀN XANH */
+      border-radius: 16px;
+      box-shadow: none; /* bỏ shadow nếu muốn trong suốt hoàn toàn */
+      overflow: hidden;
+
+      /* card luôn co giãn theo màn hình */
+      width: min(1000px, 95vw);                 /* tối đa 1000px, nhưng không vượt 95% màn hình */
+      height: min(720px, calc(100vh - 160px));  /* KHÔNG cao hơn chiều cao màn hình trừ header/margin */
+      margin: 40px auto;                        /* căn giữa, bỏ margin-left cứng 400px */
+    }
+
+    .map-section {
+      width: 60%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      padding: 0;
+      border-radius: 16px;      /* bo tròn khung map */
+      overflow: hidden;         /* cắt phần bản đồ thừa */
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      border-radius: 16px;      /* bo tròn bản đồ */
+      overflow: hidden;         /* rất quan trọng để tile không vuông góc */
+      min-height: 260px;        /* tránh quá thấp trên mobile rất nhỏ */
+    }
+
+    .svg-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .svg-overlay svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .region path {
+      fill: rgba(255, 255, 255, 0.2) !important;
+      stroke: #2e7d32 !important;
+      stroke-width: 1.5 !important;
+      transition: fill 0.2s ease, stroke 0.2s ease;
+      cursor: pointer;
+      pointer-events: all;
+    }
+
+    .region path:hover {
+      fill: #ffeb3b !important;
+      stroke: #fbc02d !important;
+    }
+
+    .tooltip {
+      position: fixed;
+      background-color: #333;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      transform: translate(-50%, -120%);
+      white-space: nowrap;
+      z-index: 999;
+    }
+
+    .info-section {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;  /* top block + quiz block tách ra, quiz chạy xuống đáy */
+      align-items: stretch;
+      background-color: transparent;
+      color: rgba(24, 80, 70, 0.87);
+      padding: 32px 32px 32px 0;
+      gap: 8px;
+    }
+
+    /* KHỐI TRÊN: tiêu đề + 3 nút */
+    .info-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;     /* bên trong vẫn căn giữa */
+      max-width: 320px;
+      margin-left: auto;       /* đẩy cả khối sang phải cột info */
+      margin-right: 0;
+      gap: 16px;
+    }
+
+    .intro-text {
+      font-size: 32px;
+      color: rgba(216, 228, 159, 1);
+      text-align: center;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .explore-box {
+      width: 100%;
+      max-width: 280px;
+      margin: 0;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      border-radius: 12px;
+      background-color: rgba(255, 255, 255, 0.12); /* nền trong suốt nhẹ */
+      backdrop-filter: blur(4px);
+      justify-content: center;
+    }
+
+    .explore-box button {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .explore-box button:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    /* KHỐI DƯỚI: câu hỏi + mô tả + nút quiz */
+    .quiz-text {
+      text-align: center;
+      max-width: 320px;
+      margin-left: auto;       /* đẩy cả khối quiz sang phải */
+      margin-right: 0;
+    }
+
+    .quiz-text h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-text p {
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .quiz-button {
+      background-color: rgba(109, 135, 120, 1);
+      color: white;
+      border: 2px solid white;
+      height: 48px;
+      padding: 0 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quiz-button:hover {
+      background-color: rgb(120, 163, 138);
+      border-color: #ffffff;
+    }
+
+    .custom-label {
+      background-color: rgba(255, 255, 255, 0.8); /* nền trắng mờ để che chữ gốc */
+      border: none;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #2e7d32;
+      font-weight: bold;
+      font-size: 13px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.3);
+    }
+
+    /* ===== RESPONSIVE: MÀN HÌNH NHỎ ===== */
+    @media (max-width: 992px) {
+      .map-container {
+        flex-direction: column;             /* map trên – info dưới */
+        height: auto;                       /* cho container cao theo nội dung */
+      }
+
+      .map-section {
+        width: 100%;
+        height: 55vh;                       /* map luôn vừa chiều cao màn hình */
+      }
+
+      .info-section {
+        width: 100%;
+        padding: 24px 16px 32px 16px;
+      }
+
+      .info-top,
+      .quiz-text {
+        margin-left: auto;
+        margin-right: auto;                 /* căn giữa trên màn nhỏ */
+      }
+    }
+
+    @media (max-width: 576px) {
+      .map-section {
+        height: 50vh;                       /* map thấp hơn chút cho mobile rất nhỏ */
+      }
+
+      .intro-text {
+        font-size: 24px;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+
+  {# KHUNG MAP + INFO #}
+  <div class="map-container">
+    <div class="map-section">
+      <div id="map">
+        <div class="svg-overlay">
+          <svg viewBox="0 0 281 172" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <g id="du_nord" class="region" data-name="Miền Bắc" transform="translate(-20,-10) scale(3.2)"></g>
+            <g id="du_centre" class="region" data-name="Miền Trung"></g>
+            <g id="du_sud" class="region" data-name="Miền Nam"></g>
+          </svg>
+          <div id="tooltip" class="tooltip"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <!-- KHỐI TRÊN: tiêu đề + các nút Explore -->
+      <div class="info-top">
+        <h2 class="intro-text">Envie de découvrir une région du Vietnam ?</h2>
+
+        <div class="explore-box">
+          {# hiện tại vẫn link tới file tĩnh; sau này bạn có thể đổi sang path('app_nord')... #}
+          <button onclick="window.location.href='{{ path('app_nord') }}'">
+            EXPLOREZ LE NORD
+          </button>
+          <button onclick="window.location.href='{{ path('app_centre') }}'">
+            EXPLOREZ LA RÉGION CENTRALE
+          </button>
+          <button onclick="window.location.href='{{ path('app_nord') }}'">
+            EXPLOREZ LE SUD
+          </button>
+        </div>
+      </div>
+
+      <!-- KHỐI DƯỚI: câu hỏi + mô tả + nút quiz -->
+      <div class="quiz-text">
+        <h3>Quel type de voyageur êtes-vous ?</h3>
+        <p>En seulement deux minutes, trouvez l’aventure qui vous correspond.</p>
+        <button class="quiz-button" onclick="window.location.href='quiz.html'">Faites le quiz !</button>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    /* ===== MAP LEAFLET ===== */
+    const map = L.map('map', {
+      zoomControl: false,
+      attributionControl: false
+    }).setView([16.0471, 108.2062], 6);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; CartoDB'
+    }).addTo(map);
+
+    // Giới hạn bao phủ toàn bộ Việt Nam
+    const vnBounds = L.latLngBounds(
+      [8.1790665, 102.14441],   // góc tây nam
+      [23.392, 109.469]         // góc đông bắc
+    );
+
+    // Fit bản đồ ngay lần đầu
+    map.fitBounds(vnBounds);
+
+    // Khi thay đổi kích thước màn hình, luôn fit lại để VN không bị cụt
+    window.addEventListener('resize', () => {
+      map.invalidateSize();
+      map.fitBounds(vnBounds);
+    });
+
+    const tooltip = document.getElementById('tooltip');
+    const regions = document.querySelectorAll('.region');
+
+    regions.forEach(region => {
+      region.addEventListener('mouseenter', () => {
+        const name = region.getAttribute('data-name') || region.id;
+        tooltip.textContent = name;
+        tooltip.style.opacity = '1';
+      });
+
+      region.addEventListener('mousemove', (e) => {
+        tooltip.style.left = e.clientX + 'px';
+        tooltip.style.top = e.clientY + 'px';
+      });
+
+      region.addEventListener('mouseleave', () => {
+        tooltip.style.opacity = '0';
+      });
+
+      region.addEventListener('click', () => {
+        const name = region.getAttribute('data-name');
+        if (name === 'Miền Bắc') window.location.href = 'nord.html';
+        if (name === 'Miền Trung') window.location.href = 'centre.html';
+        if (name === 'Miền Nam') window.location.href = 'sud.html';
+      });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À Propos{% endblock %}
+
+{# CSS riêng cho trang A Propos: override / bổ sung so với base #}
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+  main {
+    padding: 0 20px 40px 20px;
+    margin-top: 130px; /* bằng chiều cao header */
+    background-color: rgba(233, 238, 209, 1);
+    text-align: center;
+  }
+
+  /* phần hình nền lớn với dòng chữ trung tâm */
+  .hero {
+    background-image: url('{{ asset('apropos/sel.jpg') }}'); /* hình nền lớn */
+    background-size: cover;
+    background-position: center;
+    min-height: 55vh;       /* dùng % chiều cao màn hình để responsive */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 1500px;      /* giới hạn chiều rộng hero */
+    margin: 0 auto;         /* căn giữa hero */
+    margin-top: -28px;      /* căn hero sát mép dưới nav */
+    padding: 40px 20px;     /* thêm padding để chữ không dính mép */
+    box-sizing: border-box;
+  }
+
+  .hero-text h1 {
+    color: rgb(54, 56, 18);
+    font-size: clamp(24px, 4vw, 60px); /* kích thước chữ linh hoạt theo màn hình */
+    text-align: center;
+    background-color: transparent;
+    padding: 16px 24px;
+    border-radius: 8px;
+    margin: 0;
+    transform: translateY(-100px); /* kéo chữ lên nhưng đỡ “bay” quá cao */
+  }
+
+  /* khối nội dung thay thế cho 2 hình (lặn biển + Huế) */
+  .bottom-section {
+    background-color: rgba(36, 75, 68, 0.63);
+    max-width: 1500px;     /* cùng bề ngang với hero */
+    margin: 0 auto;        /* căn giữa */
+    padding: 35px 20px 60px 20px;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .bottom-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .bottom-content h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .bottom-content p {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+
+  /* Menu hamburger xổ xuống dưới navbar trên màn hình nhỏ */
+  @media (max-width: 991.98px) { /* < lg của Bootstrap */
+    main {
+      margin-top: 120px; /* giảm một chút cho màn nhỏ */
+      padding: 0 15px 30px 15px;
+    }
+
+    .hero {
+      margin-top: -10px;
+      min-height: 45vh;
+      padding: 30px 15px;
+    }
+
+    .hero-text h1 {
+      transform: translateY(-60px); /* bớt kéo cao chữ trên tablet */
+    }
+
+    .bottom-section {
+      padding: 30px 15px 45px 15px;
+    }
+
+    .bottom-content h2 {
+      font-size: 26px;
+    }
+
+    .bottom-content p {
+      font-size: 16px;
+    }
+  }
+
+  /* màn hình rất nhỏ (điện thoại) */
+  @media (max-width: 576px) {
+    main {
+      margin-top: 110px; /* khớp với chiều cao header mobile trong base */
+      padding: 0 10px 25px 10px;
+    }
+
+    .hero {
+      min-height: 40vh;
+      padding: 20px 10px;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(18px, 5vw, 24px); /* chữ nhỏ hơn cho màn nhỏ */
+      padding: 10px 12px;
+      transform: translateY(-30px);
+    }
+
+    .bottom-section {
+      padding: 25px 10px 35px 10px;
+    }
+
+    .bottom-content h2 {
+      font-size: 22px;
+    }
+
+    .bottom-content p {
+      font-size: 15px;
+    }
+  }
+  </style>
+{% endblock %}
+
+{% block body %}
+
+  <!-- phần hình nền lớn với dòng chữ trung tâm -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>À PROPOS DE NOUS</h1>
+    </div>
+  </section>
+
+  <!-- phần nội dung thay thế 2 hình nhỏ + nút -->
+  <section class="bottom-section">
+    <div class="bottom-content">
+      <h2>INSPIRÉE PAR L’AMOUR POUR LE PEUPLE ET LA CULTURE DU VIETNAM</h2>
+      <p>
+        Notre projet touristique est né d’une passion profonde pour l’âme du Vietnam – son peuple chaleureux,
+        sa culture millénaire et ses traditions vivantes. Chaque itinéraire, chaque expérience proposée est conçue
+        avec respect et admiration pour les valeurs locales, les savoir-faire artisanaux, la gastronomie authentique
+        et les histoires humaines qui font vibrer ce pays. À travers nos suggestions de voyage, nous souhaitons offrir
+        bien plus qu’un simple séjour : une immersion sincère dans la beauté, la générosité et la richesse culturelle
+        du Vietnam.
+      </p>
+    </div>
+  </section>
+
+  <!-- ĐÃ BỎ: phần Bản Dốc, Sơn Đoòng và video overlay -->
+
+{% endblock %}

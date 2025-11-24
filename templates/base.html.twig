@@ -1,12 +1,663 @@
 {# templates/base.html.twig #}
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Voyage{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  {% block stylesheets %}
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif; /* font chữ chung */
+    background-color: rgba(233, 238, 209, 1);  /* thêm dòng này */
+  }
+
+  /* phần đầu trang với hình nền lồng đèn */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* đảm bảo nằm trên các phần khác */
+    height: 130px; /* thay doi chieu cao giua mep tren web voi khoi long den */
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(233, 238, 209, 1);  /* thêm dòng này */
+  }
+
+  /* dãy lồng đèn động phía dưới thanh điều hướng */
+  #header-lanterns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 0;
+    overflow: hidden;
+    height: 160px;
+    font-size: 0; /* loại bỏ khoảng trắng giữa các ảnh */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1; /* lớp thấp hơn */
+  }
+
+  .lantern { /* khối bao quanh hình ảnh */
+    width: auto;
+    height: 100px; /* khối hình ảnh cao 120px - thay đổi chiều cao tại đây */
+    margin: 0px; /* khoảng cách giữa các hình ảnh */
+  }
+
+  .lantern img {
+    height: 100%; /* hình ảnh sẽ cao bằng khối chứa nó */
+    object-fit: contain; /* giữ nguyên tỷ lệ ảnh */
+    display: block; /* tránh khoảng trắng dưới ảnh */
+  }
+
+  /* phần lồng đèn bên dưới */
+  #lantern-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 0;
+    overflow: hidden;
+    height: 160px;
+    font-size: 0;
+  }
+
+  /* thanh điều hướng nằm góc phải phía trên */
+  nav {
+    background-color: transparent;
+  }
+
+  main {
+    padding: 0 20px 40px 20px;
+    margin-top: 130px; /* bằng chiều cao header */
+    background-color: rgba(233, 238, 209, 1);
+    text-align: center;
+  }
+
+  .intro h1 {
+    font-size: 24px;
+    color: #4CAF50;
+    margin-bottom: 16px;
+  }
+
+  .intro p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 24px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    background-color: rgba(36, 75, 68, 0.63);
+    color: #fff;
+    border-radius: 999px; /* tạo nút dạng pill, bo tròn nửa hình tròn ở hai đầu nút */
+    border: 2px solid #ffffff; /* viền nút trắng */
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    display: inline-block;   /* để nút co đúng theo kích thước chữ */
+    width: auto;             /* bỏ mọi độ rộng */
+    white-space: nowrap;     /* không xuống dòng */
+    padding: 10px 20px;      /* vẫn giữ padding đẹp */
+  }
+
+  .btn-long {
+    white-space: nowrap;
+  }
+
+  .btn:hover {
+    background-color: #fada7b;
+    color: #333;
+  }
+
+  .gallery {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .gallery img {
+    width: 280px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  /* phần hình nền lớn với dòng chữ trung tâm */
+  .hero {
+    background-image: url('../Test-acceuil/photo/HaLong.jpeg'); /* hình nền lớn - sẽ override bằng inline style từ Twig */
+    background-size: cover;
+    background-position: center;
+    min-height: 55vh;          /* dùng % màn hình cho responsive */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 1500px;      /* giới hạn chiều rộng hero */
+    margin: 0 auto;         /* căn giữa hero */
+    margin-top: -28px;  /* căn hero sát mép dưới nav */
+    padding: 40px 20px;     /* thêm padding để nội dung không dính cạnh */
+    box-sizing: border-box;
+  }
+
+  .hero-text h1 {
+    color: rgb(139, 142, 80);
+    font-size: clamp(22px, 4vw, 60px); /* responsive font */
+    text-align: center;
+    background-color: transparent;
+    padding: 16px 24px;
+    border-radius: 8px;
+    margin: 0; 
+    transform: translateY(-80px); /* giảm để đỡ “bay” quá cao trên mobile */
+  }
+
+  /* phần hai hình ảnh nhỏ với nút điều hướng */
+  .bottom-section {
+    background-color: rgba(36, 75, 68, 0.63);
+    max-width: 1500px;     /* = max-width của .hero */
+    margin: 0 auto;        /* căn giữa như .hero */
+    padding: 35px 20px 40px 20px;  /* khoảng cách trên/dưới + hai bên */
+  }
+
+  .content-row {
+    display: flex;
+    justify-content: center;
+    gap: 250px;
+    margin-top: 0;
+    flex-wrap: wrap;
+  }
+
+  .content-block {
+    text-align: center;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* dàn đều: ảnh trên – nút giữa – đáy */
+    /* bỏ chiều cao cố định để khối tự co giãn */
+  }
+
+  .content-block img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    height: auto;
+  }
+
+  .content-block .btn {
+    margin-top: 16px;
+    align-self: center;
+  }
+
+  /* phần mở rộng với màu nền mới */
+  .extended-section {
+    background-color: rgba(161, 194, 192, 1); /* màu nền yêu cầu */
+    max-width: 1500px; /* bằng với .bottom-section */
+    margin: 0 auto; /* căn giữa */
+    padding: 60px 20px; /* khoảng cách bên trong */
+    text-align: center;
+  }
+
+  .extended-content h2 {
+    font-size: 32px;
+    color: #2f4f4f;
+    margin-bottom: 20px;
+  }
+
+  .extended-content p {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* phần Thác Bản Dốc: hình trái – chữ phải */
+  .ban-doc-section {
+    background-color: rgba(161, 194, 192, 1); /* màu nền yêu cầu */
+    padding: 40px 0;
+  }
+
+  .ban-doc-wrapper {
+    display: flex;
+    max-width: 1500px;
+    margin: 0 auto;
+    gap: 40px; /* khoảng cách giữa hình và chữ */
+    align-items: center;
+    flex-wrap: wrap; /* hiển thị đẹp trên màn hình nhỏ */
+  }
+
+  .ban-doc-image {
+    flex: 1 1 320px; /* co giãn linh hoạt theo màn hình */
+  }
+
+  .ban-doc-image img {
+    width: 100%; /* hình chiếm toàn bộ chiều ngang cột */
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    height: auto;
+    object-fit: cover;
+  }
+
+  .ban-doc-text {
+    flex: 1 1 320px;
+    min-width: 280px;
+    display: flex;
+    align-items: stretch; /* để nội dung bên trong chiếm toàn bộ chiều cao */
+  }
+
+  .ban-doc-text h2 {
+    font-size: 28px;
+    color: #2f4f4f;
+    margin-bottom: 16px;
+  }
+
+  .ban-doc-text p {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 24px;
+  }
+
+  .ban-doc-text-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* căn đều tiêu đề trên và nút dưới - không dàn đều*/
+    height: 100%;
+    padding: 0 10px;
+  }
+
+  .ban-doc-middle {
+    flex-grow: 1;
+    margin: 20px 0;
+    overflow: auto; /* nếu nội dung quá dài */
+  }
+  
+  .ban-doc-text-inner a.btn {
+    width: fit-content !important; 
+    display: inline-block !important;
+    margin: 8px auto 0 auto;  /* căn giữa + giữ khoảng cách trên */
+  }
+
+  /* Sơn Đoòng: hình bên phải – chữ bên trái */
+  .son-dong-section {
+    background-color: rgba(85, 134, 131, 1); /* nền mới */
+    padding: 40px 0;
+  }
+
+  .son-dong-wrapper {
+    display: flex;
+    max-width: 1500px;
+    margin: 0 auto;
+    gap: 40px;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: row-reverse; /* đảo ngược: hình bên phải, chữ bên trái */
+  }
+
+  /* Overlay làm mờ nền khi xem video */
+  .video-overlay {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    background: rgba(0, 0, 0, 0.6);
+    display: none;              /* ẩn mặc định */
+    justify-content: center;    /* căn giữa ngang */
+    align-items: center;        /* căn giữa dọc */
+    z-index: 2000;              /* cao hơn header */
+  }
+
+  /* Khung popup chứa video */
+  .video-modal {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    background: transparent;
+  }
+
+  /* Giữ tỉ lệ 16:9 cho video */
+  .video-modal-inner {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  /* Iframe chiếm toàn bộ khung */
+  .video-modal-inner iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* Nút đóng video */
+  .video-close-btn {
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #ff5555;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  /* ----------------------------- */
+  /* NAVBAR Bootstrap nhưng giữ style cũ */
+  /* ----------------------------- */
+
+  .custom-navbar {
+    position: absolute;
+    bottom: 25px;        /* giữ vị trí như nav cũ */
+    right: 10px;
+    width: auto;
+    z-index: 2000;
+    background: transparent !important;
+    padding: 0;
+  }
+
+  /* Nút menu khi thu nhỏ */
+  .custom-toggler {
+    border: 2px solid #a7b942;
+    border-radius: 6px;
+  }
+  .custom-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(167,185,66,1)' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  }
+
+  /* các link giống style cũ */
+  .custom-link {
+    color: #fff !important;
+    background-color: #a7b942;
+    border: 2px solid #a7b942;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: 0.3s ease;
+  }
+
+  .custom-link:hover {
+    background-color: #fada7b !important;
+    border-color: #ffa600 !important;
+    color: #333 !important;
+  }
+
+  /* Ô input theo style cũ */
+  .custom-input {
+    border: 2px solid #a7b942;
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  /* Nút Recherche theo style cũ */
+  .custom-btn {
+    background-color: #a7b942;
+    border: 2px solid #a7b942;
+    color: #fff;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-left: 6px;
+    padding: 6px 16px;
+  }
+
+  .custom-btn:hover {
+    background-color: #fada7b;
+    color: #333;
+  }
+
+  /* Menu hamburger xổ xuống dưới navbar trên màn hình nhỏ */
+  @media (max-width: 991.98px) { /* < lg của Bootstrap */
+    main {
+      margin-top: 120px; /* giảm một chút cho màn nhỏ */
+      padding: 0 10px 30px 10px;
+    }
+
+    .hero {
+      margin-top: -10px;
+      min-height: 45vh;
+      padding: 30px 15px;
+    }
+
+    .hero-text h1 {
+      transform: translateY(-40px); /* bớt kéo cao chữ */
+    }
+
+    .bottom-section {
+      padding: 25px 15px 30px 15px;
+    }
+
+    .content-row {
+      gap: 40px; /* trên màn hình nhỏ không để gap 250px */
+    }
+
+    .ban-doc-wrapper,
+    .son-dong-wrapper {
+      gap: 24px;
+    }
+
+    .ban-doc-image img {
+      margin-left: 0; /* tránh dính mép màn hình nhỏ */
+    }
+
+    .ban-doc-text-inner {
+      padding: 0;
+    }
+
+    .custom-navbar {
+      position: absolute;
+      bottom: 25px;
+      right: 10px;
+      width: auto;
+      z-index: 2000;
+      background: transparent !important;
+    }
+
+    .custom-navbar .navbar-collapse {
+      position: absolute;
+      top: 100%;      /* mở ngay bên dưới thanh navbar */
+      right: 0;
+      background-color: rgba(233, 238, 209, 0.96); /* nền cho menu, tùy chỉnh */
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+
+    .custom-navbar .navbar-nav {
+      flex-direction: column;
+      align-items: flex-end; /* menu dính về bên phải */
+    }
+
+    .custom-navbar .nav-item + .nav-item {
+      margin-top: 6px; /* khoảng cách giữa các nút */
+    }
+  }
+
+  /* màn hình rất nhỏ (điện thoại) */
+  @media (max-width: 576px) {
+    header {
+      height: 110px;
+    }
+
+    main {
+      margin-top: 110px;
+    }
+
+    .hero {
+      min-height: 40vh;
+      padding: 20px 10px;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(18px, 5vw, 26px);
+      padding: 10px 12px;
+      transform: translateY(-20px);
+    }
+
+    .bottom-section {
+      padding: 20px 10px 25px 10px;
+    }
+
+    .content-block {
+      max-width: 260px;
+    }
+
+    .ban-doc-section,
+    .son-dong-section {
+      padding: 30px 0;
+    }
+
+    .ban-doc-text h2 {
+      font-size: 22px;
+    }
+
+    .extended-content h2 {
+      font-size: 26px;
+    }
+
+    .extended-content p {
+      font-size: 16px;
+    }
+
+    .btn,
+    .btn-long {
+      white-space: normal; /* cho phép nút xuống dòng trên màn rất nhỏ */
+      text-align: center;
+    }
+  }
+  </style>
+  {% endblock %}
 </head>
 <body>
+
+  <!-- phần đầu trang với hình nền -->
+  <header class="w-100">
+    
+    <!-- dãy lồng đèn động trong header -->
+    <div id="header-lanterns"></div>
+
+    <!-- NAVBAR Bootstrap 5 custom -->
+    <nav class="navbar navbar-expand-lg custom-navbar">
+      <div class="container-fluid justify-content-end">
+
+        <!-- Search box -->
+        <form class="d-flex search-box me-3" role="search" onsubmit="handleSearch(); return false;">
+          <input class="form-control custom-input" type="search" placeholder="Recherche..." id="searchInput">
+          <button class="btn custom-btn" type="button" onclick="handleSearch()">Recherche</button>
+        </form>
+
+        <!-- Toggler cho mobile -->
+        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menu items -->
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+            <li class="nav-item">
+                <a class="nav-link custom-link" href="{{ path('app_home') }}">Accueil</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link custom-link" href="{{ path('app_apropos') }}">À propos de nous</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link custom-link" href="{{ path('app_experience') }}">Expérience</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link custom-link" href="#">Connecté</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link custom-link" href="#">Langue</a>
+            </li>
+        </ul>
+
+        </div>
+
+      </div>
+    </nav>
+
+  </header>
+
+  <main>
     {% block body %}{% endblock %}
+  </main>
+
+  <!-- Bootstrap 5 JS Bundle (kèm Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function renderHeaderLanterns() {
+      const container = document.getElementById('header-lanterns');
+      container.innerHTML = '';
+
+      const screenWidth = window.innerWidth;
+      const lanternWidth = 100;
+      const count = Math.floor(screenWidth / lanternWidth);
+
+      for (let i = 0; i < count; i++) {
+        const lantern = document.createElement('div');
+        lantern.className = 'lantern';
+
+        const img = document.createElement('img');
+        img.src = "{{ asset('Long-Den.png') }}"; /* HINH ANH LONG DEN */
+        img.alt = 'Lồng đèn';
+
+        lantern.appendChild(img);
+        container.appendChild(lantern);
+      }
+    }
+
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (query !== '') {
+        // sau này bạn có thể đổi sang route Symfony
+        alert('Tạm thời chưa có trang tìm kiếm. Từ khóa: ' + query);
+      } else {
+        alert('Veuillez saisir un mot-clé pour effectuer une recherche.');
+      }
+    }
+
+    window.addEventListener('load', () => {
+      renderHeaderLanterns();
+    });
+
+    window.addEventListener('resize', () => {
+      renderHeaderLanterns();
+    });
+  </script>
+
+  {% block javascripts %}{% endblock %}
 </body>
 </html>

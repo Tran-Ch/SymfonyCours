@@ -26,10 +26,18 @@
       margin: 0;
     }
 
+    /* Đoạn mô tả dưới tiêu đề */
+    .grid-page-intro {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #3d4a27;
+      margin-bottom: 24px;
+    }
+
     .grid-wrapper {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-auto-rows: 200px;
+      grid-auto-rows: minmax(220px, auto);
       gap: 20px;
     }
 
@@ -40,13 +48,45 @@
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .grid-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+    }
+
+    .grid-card-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: #3d4a27;
+      min-height: 48px;   /* cố định chiều cao như incroyable.html.twig */
+      display: flex;
+      align-items: center; /* căn giữa theo chiều dọc */
+    }
+
+    /* Ảnh dưới title */
+    .grid-card-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .grid-card-text {
+      font-size: 13px;
+      color: #334;
+      flex-grow: 1;
+    }
+
+    .grid-card-footer {
+      font-size: 12px;
+      color: #566;
+      margin-top: 8px;
+      text-align: right;
     }
 
     @media (max-width: 992px) {
@@ -74,14 +114,95 @@
       <a href="{{ path('app_nord') }}" class="btn btn-long">← Retour à la carte du Nord</a>
     </div>
 
+    {# Nội dung mô tả thêm dưới tiêu đề #}
+    <p class="grid-page-intro">
+      Un voyage à la rencontre des sons, des traditions et de l’âme du Nord.
+      <br>
+      Le Nord du Vietnam n’est pas seulement une terre de montagnes majestueuses et de rizières en terrasses. C’est surtout un monde où la culture se vit au quotidien : dans les mélodies des instruments traditionnels, les fêtes ancestrales, les coutumes séculaires et l’architecture unique des villages ethniques.
+      Voici 8 destinations essentielles pour plonger au cœur de cette richesse culturelle.
+    </p>
+
     <div class="grid-wrapper">
-      {% for i in 1..6 %}
+
+      {% set items = [
+        {
+          'title': 'Hà Giang – La symphonie H’Mông au milieu des montagnes de pierre',
+          'image': 'hagiang-culture.jpg',
+          'text': "À Hà Giang, la culture résonne dans l’air pur des hauts plateaux.
+Le khèn H’Mông, les flûtes et les chants d’amour s’élèvent lors des fêtes traditionnelles comme le Gầu Tào.
+Dans les marchés de Đồng Văn ou Mèo Vạc, les costumes brodés, les maisons en terre battue et les rituels de rencontre dévoilent un mode de vie authentique.
+Hà Giang est un tableau vivant où chaque geste raconte une histoire."
+        },
+        {
+          'title': 'Sapa – Le carrefour des cultures entre ciel et terre',
+          'image': 'sapa-culture.jpg',
+          'text': "Sapa est le lieu de rencontre de nombreuses ethnies : H’Mông, Dao rouge, Giáy…
+Vous y découvrirez l’art du tissage, les bains aux herbes médicinales des Dao, les chants rituels et les fêtes agricoles comme le Roóng Poọc.
+Les maisons en bois et les traditions séculaires créent une atmosphère à la fois mystérieuse et chaleureuse.
+À Sapa, chaque village est un univers culturel à part entière."
+        },
+        {
+          'title': 'Mù Cang Chải – L’art agricole des terrasses H’Mông',
+          'image': 'mucangchai-culture.jpg',
+          'text': "Les rizières en terrasses de Mù Cang Chải ne sont pas qu’un paysage spectaculaire : ce sont des œuvres culturelles façonnées par les H’Mông depuis des siècles.
+Les rites de bénédiction des champs, les techniques d’irrigation et les fêtes de la récolte témoignent d’une harmonie profonde entre l’homme et la nature.
+Ici, l’agriculture devient un patrimoine vivant."
+        },
+        {
+          'title': 'Ninh Bình – Le berceau de la culture vietnamienne',
+          'image': 'ninhbinh-culture.jpg',
+          'text': "Ninh Bình est un lieu où l’histoire et la culture vietnamiennes prennent vie.
+La cité antique de Hoa Lư, avec ses temples et son architecture traditionnelle, rappelle l’époque des dynasties Đinh et Lê.
+Les chants de chèo, les fêtes historiques et la vie rurale autour de Tràng An et Tam Cốc offrent un aperçu précieux de la culture du delta du Nord.
+Ninh Bình est une porte ouverte sur les origines du Vietnam."
+        },
+        {
+          'title': 'Baie d’Halong – La culture des villages flottants au cœur d’une merveille naturelle',
+          'image': 'halong-culture.jpg',
+          'text': "Au-delà de ses paysages iconiques, la baie d’Halong abrite des villages de pêcheurs comme Cửa Vạn, où les habitants vivent sur l’eau depuis des générations.
+Vous pourrez y découvrir les chants marins, les techniques de pêche traditionnelles et l’architecture unique des maisons flottantes.
+Halong est un trésor culturel aussi fascinant que ses paysages."
+        },
+        {
+          'title': 'Mai Châu – L’univers chaleureux des Thaï blancs',
+          'image': 'maichau-culture.jpg',
+          'text': "Mai Châu est une immersion douce dans la culture des Thaï blancs.
+Les maisons sur pilotis, les danses xòe, les mélodies du đàn tính, les étoffes tissées à la main et le vin de riz partagé autour du feu créent une ambiance conviviale et authentique.
+Mai Châu est un lieu où l’on se sent accueilli comme un membre de la famille."
+        },
+        {
+          'title': 'Ba Bể – La culture Tày au cœur de la nature sauvage',
+          'image': 'babe-culture.jpg',
+          'text': "Le village de Pác Ngòi, au bord du lac Ba Bể, est un véritable sanctuaire de la culture Tày.
+Vous pourrez y découvrir les maisons en bois sur pilotis, écouter le chant Then – un art sacré – et déguster des plats traditionnels préparés avec des produits locaux.
+Les légendes du lac, racontées au coin du feu, ajoutent une touche de mystère à ce lieu paisible.
+Ba Bể est une rencontre intime avec l’âme Tày."
+        },
+        {
+          'title': 'Cao Bằng – Terre de fêtes, de légendes et d’artisanat Nùng – Tày',
+          'image': 'caobang-culture.jpg',
+          'text': "Cao Bằng est l’un des territoires où les cultures Nùng et Tày sont les mieux préservées.
+Les fêtes Lồng Tồng, les chants sli et lượn, les forges traditionnelles de Phúc Sen et les maisons en torchis témoignent d’un patrimoine riche et vivant.
+Au-delà de la majestueuse cascade de Bản Giốc, ce sont les villages et leurs traditions qui séduisent les voyageurs.
+Cao Bằng est une mosaïque culturelle vibrante et authentique."
+        }
+      ] %}
+
+      {% for item in items %}
         <article class="grid-card">
-          <strong>Thế mạnh văn hoá {{ i }}</strong>
-          <p style="font-size:13px; margin-top:8px;">
-            Âm nhạc dân tộc, lễ hội, phong tục, kiến trúc… Bạn điền chi tiết sau.
-          </p>
-          <div style="font-size:12px; text-align:right;">♥ 0 likes – 0 comments</div>
+          <div class="grid-card-title">{{ item.title }}</div>
+
+          <img
+            src="{{ asset('Image/nord/' ~ item.image) }}"
+            alt="{{ item.title }}"
+            class="grid-card-image"
+          >
+
+          <div class="grid-card-text">
+            {{ item.text|nl2br }}
+          </div>
+
+          <div class="grid-card-footer">♥ 0 likes – 0 comments</div>
         </article>
       {% endfor %}
     </div>

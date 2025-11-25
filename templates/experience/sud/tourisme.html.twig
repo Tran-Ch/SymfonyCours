@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Culture du Centre{% endblock %}
+{% block title %}Tourisme de vacances du Sudd{% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
@@ -8,7 +8,7 @@
     main {
       margin-top: 130px;
       padding: 40px 20px 60px 20px;
-      background-color: #d4c095;
+      background-color: #b7c89a;
     }
 
     .grid-page { max-width: 1200px; margin: 0 auto; }
@@ -22,7 +22,7 @@
 
     .grid-page-header h1 {
       font-size: 26px;
-      color: #5c3a1c;
+      color: #305433;
       margin: 0;
     }
 
@@ -34,7 +34,7 @@
     }
 
     .grid-card {
-      background-color: #e5e39b;
+      background-color: #d9e6a9;
       border-radius: 14px;
       padding: 12px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
@@ -70,16 +70,16 @@
 {% block body %}
   <section class="grid-page">
     <div class="grid-page-header">
-      <h1>DÉCOUVREZ LA CULTURE DU CENTRE</h1>
-      <a href="{{ path('app_centre') }}" class="btn btn-long">← Retour à la carte du Centre</a>
+      <h1>TOURISME DE VACANCES DU SUD</h1>
+      <a href="{{ path('app_sud') }}" class="btn btn-long">← Retour à la carte du Sud</a>
     </div>
 
     <div class="grid-wrapper">
       {% for i in 1..6 %}
         <article class="grid-card">
-          <strong>Thế mạnh văn hoá {{ i }}</strong>
+          <strong>Điểm nghỉ dưỡng {{ i }}</strong>
           <p style="font-size:13px; margin-top:8px;">
-            Âm nhạc dân tộc, lễ hội, phong tục, kiến trúc… Bạn điền chi tiết sau.
+            Resort, homestay, tour nghỉ dưỡng… bạn điền thông tin ở đây.
           </p>
           <div style="font-size:12px; text-align:right;">♥ 0 likes – 0 comments</div>
         </article>

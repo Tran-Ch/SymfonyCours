@@ -5,6 +5,11 @@
 {% block stylesheets %}
   {{ parent() }}
   <style>
+    /* tránh tràn ngang cho mọi kích thước */
+    html, body {
+      overflow-x: hidden;
+    }
+
     body {
         background-color: rgba(36, 75, 68, 0.38);
     }
@@ -119,14 +124,14 @@
       border-radius: 0;
       box-shadow: none;
       overflow: visible;
-      margin-top: -25px;   /* kéo map lên một chút dưới header */
+      margin-top: -25px;   /* kéo map lên một chút dưới header (màn hình lớn) */
     }
 
     .map-container svg {
       display: block;
       width: 330px;        /* kích thước logic ban đầu */
       height: auto;
-      transform: scale(2.5);          /* tỷ lệ map bạn đang dùng */
+      transform: scale(2.5);          /* tỷ lệ map bạn đang dùng (màn hình lớn) */
       transform-origin: top left;
       margin-left: -600px;
     }
@@ -167,19 +172,19 @@
         z-index: 9999;
     }
 
-    /* card thông tin tỉnh thành – nằm NGAY dưới map và ở giữa */
+    /* card thông tin tỉnh thành – nằm NGAY dưới map và ở giữa (layout màn lớn) */
     .city-info-wrapper {
         width: 1000px;        /* cùng chiều rộng với .container */
         max-width: 95%;
         margin-left: -250px;   /* cùng offset với .container để card nằm dưới map */
         margin-top: 120px;     /* tăng/giảm để card thấp xuống đúng mức bạn muốn */
-        display: flex;            /* dùng flex để canh giữa card  */
+        display: flex;         /* dùng flex để canh giữa card  */
         justify-content: center;  /* card nằm giữa theo trục ngang */
     }
 
     /* Khung card tổng thể */
     #city-info.card {
-        max-width: 380px;         /* <<< kích thước card giống hình 2 */
+        max-width: 380px;         /* kích thước card giống hình cũ */
         width: 100%;              /* cho phép co giãn nhỏ hơn 380px trên mobile */
         border-radius: 8px;
         overflow: hidden;         /* bo tròn cả header + thân */
@@ -189,42 +194,42 @@
 
     /* Header màu xanh đậm, chữ trắng, căn trái */
     #city-info .card-header {
-    background-color: #406459 !important; /* giống màu bạn đang dùng */
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 16px;
-    padding: 8px 16px;
+      background-color: #406459 !important; /* giống màu bạn đang dùng */
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 8px 16px;
     }
 
     /* Phần body trắng */
     #city-info .card-body {
-    background-color: #ffffff;
-    padding: 12px 20px;
+      background-color: #ffffff;
+      padding: 12px 20px;
     }
 
     /* Các dòng thông tin bên trong */
     #city-info .list-group-item {
-    border-left: 0;
-    border-right: 0;
-    border-color: #e0e0e0;        /* màu đường kẻ mảnh giữa các dòng */
-    font-size: 14px;
-    padding: 8px 0;
+      border-left: 0;
+      border-right: 0;
+      border-color: #e0e0e0;        /* màu đường kẻ mảnh giữa các dòng */
+      font-size: 14px;
+      padding: 8px 0;
     }
 
     /* bỏ đường kẻ trên cùng để giống hình */
     #city-info .list-group-item:first-child {
-    border-top: 0;
+      border-top: 0;
     }
 
     /* tiêu đề từng dòng (Superficie, Population, Description…) */
     #city-info .list-group-item strong {
-    font-weight: 600;
+      font-weight: 600;
     }
 
     /* đoạn mô tả dài */
     #city-info .city-desc {
-    margin-top: 4px;
-    line-height: 1.5;
+      margin-top: 4px;
+      line-height: 1.5;
     }
 
     .card-header {
@@ -233,6 +238,24 @@
 
     /* ===== RESPONSIVE ===== */
 
+    /* Màn từ 1200–1440px (14" thường nằm ở đây): giảm nhẹ scale map */
+    @media (max-width: 1440px) {
+      .nord-wrapper {
+        max-width: 1100px;
+      }
+
+      .map-container svg {
+        transform: scale(2.1);   /* nhỏ hơn 2.5 để bớt tràn */
+        margin-left: -450px;     /* chỉnh lại cho map nằm đúng vị trí */
+      }
+
+      .city-info-wrapper {
+        width: 900px;
+        margin-left: -200px;
+      }
+    }
+
+    /* Tablet/laptop vừa (≤ 1200px): giảm nhẹ gap, vẫn giữ layout 2 cột */
     @media (max-width: 1200px) {
       .nord-wrapper {
         grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
@@ -245,25 +268,47 @@
       }
     }
 
+    /* Tablet dọc / màn nhỏ hơn (≤ 992px): map + card xếp dọc, ôm trong màn hình */
     @media (max-width: 992px) {
       .nord-wrapper {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr;   /* map trên, text dưới */
+        gap: 24px;
       }
 
       .nord-right h1 {
         text-align: center;
       }
 
+      .map-section {
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;  /* map trên, card dưới */
+      }
+
+      .map-container {
+        width: 100%;
+        display: flex;
+        justify-content: center; /* luôn căn giữa map */
+      }
+
       .map-container svg {
-        transform: scale(1.6);
-        margin-left: -150px;
+        width: 100%;
+        height: auto;
+        transform: scale(1.5);            /* map to hơn */
+        transform-origin: center top;     /* tâm nằm giữa để không bị lệch */
+        
+        margin-left: 0 !important;        /* xoá đẩy lệch trái */
+        max-width: 330px;                 /* giới hạn để không tràn */
       }
 
       .city-info-wrapper {
-        max-width: 800px;
+        margin-left: 0 !important;
+        margin-right: 0;
+        justify-content: center;
       }
     }
 
+    /* Điện thoại (≤ 768px): thu nhỏ thêm nhưng giữ khoảng cách & vị trí */
     @media (max-width: 768px) {
       main {
         margin-top: 120px;
@@ -275,19 +320,28 @@
         padding-top: 10px;
       }
 
+      .map-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
       .map-container svg {
         width: 100%;
-        max-width: 360px;
-        transform: scale(1.2);
+        transform: scale(1.4);
         transform-origin: center top;
-        margin-left: 0;
+
+        margin-left: 0 !important; /* luôn giữa */
+        max-width: 280px;          /* phù hợp màn nhỏ */
       }
 
       .city-info-wrapper {
-        max-width: 100%;
+        margin: 20px auto 0;
+        justify-content: center;
       }
     }
 
+    /* Màn rất nhỏ (≤ 576px): co thêm 1 chút */
     @media (max-width: 576px) {
       main {
         margin-top: 110px;
@@ -297,9 +351,16 @@
       .nord-right h1 {
         font-size: 22px;
       }
+
+      .map-container,
+      .map-container svg,
+      .city-info-wrapper {
+        max-width: 320px;
+      }
     }
   </style>
 {% endblock %}
+
 
 {% block body %}
   <section class="nord-wrapper">
@@ -540,15 +601,15 @@
         <p class="nord-intro">
             Choisissez l’une des trois expériences pour explorer plus en profondeur le Nord :
             destinations, culture, gastronomie et activités touristiques.
-            </p>
+        </p>
 
-            <p class="nord-description">
+        <p class="nord-description">
             <strong>Le Nord – Entre traditions et paysages majestueux</strong>
             Le nord du Vietnam séduit par ses montagnes spectaculaires, ses rizières en terrasses
             à Sapa et sa culture ancestrale. Hanoï, la capitale millénaire, vous accueille avec ses
             temples, ses marchés animés et sa cuisine de rue savoureuse. Ne manquez pas la baie d’Ha Long,
             joyau naturel classé par l’UNESCO.
-            </p>
+        </p>
 
     </div>
   </section>
@@ -647,7 +708,7 @@
         name: "Lang Son",
         area: "8 310 km²",
         population: "≈ 790 000",
-        desc: "Province frontalière, centre majeur du commerce avec la Chine."
+        desc: "Province frontalière, centre majeur du commerce với la Chine."
       }
     };
 

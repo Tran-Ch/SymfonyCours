@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CentreController extends AbstractController
 {   
-    // Trang 1: Expérience du Trung (map vùng Trung + nút đi tiếp)
+    // Trang 1: Expérience du Centre (map vùng Trung + nút đi tiếp)
     #[Route('/experience/centre', name: 'app_centre')]
     public function index(): Response
     {

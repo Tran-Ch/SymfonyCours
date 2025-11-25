@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Culture du Centre{% endblock %}
+{% block title %}Expérience incroyable du Sud{% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
@@ -8,10 +8,13 @@
     main {
       margin-top: 130px;
       padding: 40px 20px 60px 20px;
-      background-color: #d4c095;
+      background-color: rgba(233, 238, 209, 1);
     }
 
-    .grid-page { max-width: 1200px; margin: 0 auto; }
+    .grid-page {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
     .grid-page-header {
       display: flex;
@@ -22,8 +25,12 @@
 
     .grid-page-header h1 {
       font-size: 26px;
-      color: #5c3a1c;
+      color: #4a5932;
       margin: 0;
+    }
+
+    .grid-page-header a {
+      font-size: 14px;
     }
 
     .grid-wrapper {
@@ -34,7 +41,7 @@
     }
 
     .grid-card {
-      background-color: #e5e39b;
+      background-color: #d7e48e;
       border-radius: 14px;
       padding: 12px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
@@ -42,6 +49,7 @@
       flex-direction: column;
       justify-content: space-between;
       cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .grid-card:hover {
@@ -49,9 +57,30 @@
       box-shadow: 0 6px 12px rgba(0,0,0,0.18);
     }
 
+    .grid-card-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: #3d4a27;
+    }
+
+    .grid-card-text {
+      font-size: 13px;
+      color: #334;
+      flex-grow: 1;
+    }
+
+    .grid-card-footer {
+      font-size: 12px;
+      color: #566;
+      margin-top: 8px;
+      text-align: right;
+    }
+
     @media (max-width: 992px) {
       .grid-wrapper {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 180px;
       }
     }
 
@@ -62,6 +91,7 @@
       }
       .grid-wrapper {
         grid-template-columns: 1fr;
+        grid-auto-rows: 180px;
       }
     }
   </style>
@@ -70,18 +100,20 @@
 {% block body %}
   <section class="grid-page">
     <div class="grid-page-header">
-      <h1>DÉCOUVREZ LA CULTURE DU CENTRE</h1>
-      <a href="{{ path('app_centre') }}" class="btn btn-long">← Retour à la carte du Centre</a>
+      <h1>EXPÉRIENCE INCROYABLE DU SUD</h1>
+      <a href="{{ path('app_sud') }}" class="btn btn-long">← Retour à la carte du Sud</a>
     </div>
 
     <div class="grid-wrapper">
+      {# Mỗi card là một thành phố / trải nghiệm. Bạn thay nội dung + hình nền sau này #}
       {% for i in 1..6 %}
         <article class="grid-card">
-          <strong>Thế mạnh văn hoá {{ i }}</strong>
-          <p style="font-size:13px; margin-top:8px;">
-            Âm nhạc dân tộc, lễ hội, phong tục, kiến trúc… Bạn điền chi tiết sau.
-          </p>
-          <div style="font-size:12px; text-align:right;">♥ 0 likes – 0 comments</div>
+          <div class="grid-card-title">Ville / Lieu {{ i }}</div>
+          <div class="grid-card-text">
+            Mô tả ngắn về trải nghiệm ấn tượng ở miền Nam (trekking, ruộng bậc thang,
+            bản làng, v.v.). Thay nội dung thực tế sau.
+          </div>
+          <div class="grid-card-footer">♥ 0 likes – 0 comments</div>
         </article>
       {% endfor %}
     </div>

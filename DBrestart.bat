@@ -9,3 +9,12 @@ symfony console doctrine:migration:migrate --no-interaction
 symfony console doctrine:fixtures:load --no-interaction
 
 php bin/console doctrine:fixtures:load --append : nếu bạn chỉ muốn thêm thêm dữ liệu mẫu mà không xoá cái cũ.
+
+Tạo migration
+php bin/console make:migration
+
+Chạy migration để tạo bảng mới trong DB
+php bin/console doctrine:migrations:migrate
+
+
+Nhấn yes khi được hỏi.

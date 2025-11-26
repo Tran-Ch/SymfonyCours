@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ExperienceSpotRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,10 +18,20 @@ final class NordController extends AbstractController
 
     // Trang 2: EXPÉRIENCE INCROYABLE DU NORD
     #[Route('/experience/nord/experience-incroyable', name: 'app_nord_incroyable')]
-    public function incroyable(): Response
+    public function incroyable(ExperienceSpotRepository $spotRepository): Response
     {
-        // KHÔNG truyền story gì hết, trang này độc lập với Story
-        return $this->render('experience/nord/incroyable.html.twig');
+        // Cách 1: dùng custom method
+        $spots = $spotRepository->findByRegionAndCategory('nord', 'incroyable');
+
+        // Cách 2: dùng findBy mặc định (kết quả tương đương):
+        // $spots = $spotRepository->findBy(
+        //     ['region' => 'nord', 'category' => 'incroyable'],
+        //     ['id' => 'ASC']
+        // );
+
+        return $this->render('experience/nord/incroyable.html.twig', [
+            'spots' => $spots,
+        ]);
     }
 
     // Trang 3: DÉCOUVREZ LA CULTURE DU NORD

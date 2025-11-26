@@ -62,12 +62,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'utilisateur')]
     private Collection $reservations;
 
+    /**
+     * @var Collection<int, ExperienceSpotLike>
+     */
+    #[ORM\OneToMany(targetEntity: ExperienceSpotLike::class, mappedBy: 'relation')]
+    private Collection $experienceSpotLikes;
+
     public function __construct()
     {
         $this->stories = new ArrayCollection();
         $this->evenements = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+        $this->experienceSpotLikes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -241,6 +248,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($comment->getUtilisateur() === $this) {
                 $comment->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExperienceSpotLike>
+     */
+    public function getExperienceSpotLikes(): Collection
+    {
+        return $this->experienceSpotLikes;
+    }
+
+    public function addExperienceSpotLike(ExperienceSpotLike $experienceSpotLike): static
+    {
+        if (!$this->experienceSpotLikes->contains($experienceSpotLike)) {
+            $this->experienceSpotLikes->add($experienceSpotLike);
+            $experienceSpotLike->setRelation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExperienceSpotLike(ExperienceSpotLike $experienceSpotLike): static
+    {
+        if ($this->experienceSpotLikes->removeElement($experienceSpotLike)) {
+            // set the owning side to null (unless already changed)
+            if ($experienceSpotLike->getRelation() === $this) {
+                $experienceSpotLike->setRelation(null);
             }
         }
 

@@ -74,7 +74,6 @@
       align-items: center; /* căn giữa theo chiều dọc */
     }
 
-
     /* Ảnh dưới dòng Ville / Lieu */
     .grid-card-image {
       width: 100%;
@@ -133,7 +132,6 @@
       </p>
 
       <div class="grid-wrapper">
-
         {% set items = [
           {
             'title': 'Hà Giang – Là où commence la route de la liberté',
@@ -215,7 +213,10 @@ Cao Bằng est une destination pour les voyageurs en quête d’authenticité et
               {{ item.text|nl2br }}
             </div>
 
-            <div class="grid-card-footer">♥ 0 likes – 0 comments</div>
+            {# Footer TĨNH – không liên quan Story #}
+            <div class="grid-card-footer">
+              ♥ 0 likes – 0 comments
+            </div>
           </article>
         {% endfor %}
       </div>

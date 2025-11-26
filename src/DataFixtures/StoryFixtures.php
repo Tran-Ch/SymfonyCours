@@ -21,6 +21,26 @@ class StoryFixtures extends Fixture
             return; // Aucune donnée à lier
         }
 
+        $admin = $utilisateurs[0]; // tạm dùng user đầu tiên làm “tác giả hệ thống”
+
+            // Hà Giang
+            $haGiang = (new Story())
+                ->setContenu("Hà Giang – Là où commence la route de la liberté ... (mô tả ngắn hoặc dài)")
+                ->setUtilisateur($admin);
+            $manager->persist($haGiang);
+
+            // Sapa
+            $sapa = (new Story())
+                ->setContenu("Sapa – Là où les nuages rencontrent les traditions ...")
+                ->setUtilisateur($admin);
+            $manager->persist($sapa);
+
+            // Mù Cang Chải
+            $muCangChai = (new Story())
+                ->setContenu("Mù Cang Chải – Le royaume des courbes dorées ...")
+                ->setUtilisateur($admin);
+            $manager->persist($muCangChai);
+        
         for ($i = 0; $i < 20; $i++) {
             $story = new Story();
             $story->setContenu($faker->paragraphs(3, true)); // Plus de contenu réaliste

@@ -19,6 +19,7 @@ final class NordController extends AbstractController
     #[Route('/experience/nord/experience-incroyable', name: 'app_nord_incroyable')]
     public function incroyable(): Response
     {
+        // KHÔNG truyền story gì hết, trang này độc lập với Story
         return $this->render('experience/nord/incroyable.html.twig');
     }
 

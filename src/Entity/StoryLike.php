@@ -13,22 +13,41 @@ class StoryLike
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'storyLikes')]
-    private ?story $story = null;
+    // mỗi like thuộc về 1 story
+    #[ORM\ManyToOne(inversedBy: 'likes')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?Story $story = null;
+
+    // và thuộc về 1 utilisateur (người bấm like)
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?Utilisateur $utilisateur = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getStory(): ?story
+    public function getStory(): ?Story
     {
         return $this->story;
     }
 
-    public function setStory(?story $story): static
+    public function setStory(?Story $story): static
     {
         $this->story = $story;
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

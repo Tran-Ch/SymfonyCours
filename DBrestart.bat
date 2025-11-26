@@ -8,3 +8,4 @@ symfony console make:migration --no-interaction
 symfony console doctrine:migration:migrate --no-interaction
 symfony console doctrine:fixtures:load --no-interaction
 
+php bin/console doctrine:fixtures:load --append : nếu bạn chỉ muốn thêm thêm dữ liệu mẫu mà không xoá cái cũ.

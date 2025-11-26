@@ -17,10 +17,6 @@ class Story
     #[ORM\Column]
     private ?int $id = null;
 
-    // Suppression du champ auteurld redondant car nous avons déjà la relation utilisateur
-    // #[ORM\Column]
-    // private ?int $auteurld = null;
-
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Le contenu ne peut pas être vide')]
     #[Assert\Length(
@@ -31,7 +27,6 @@ class Story
     )]
     private ?string $contenu = null;
 
-    
     /**
      * @var Collection<int, Evenement>
      */
@@ -52,14 +47,14 @@ class Story
     /**
      * @var Collection<int, StoryLike>
      */
-    #[ORM\OneToMany(targetEntity: StoryLike::class, mappedBy: 'story')]
-    private Collection $storyLikes;
+    #[ORM\OneToMany(mappedBy: 'story', targetEntity: StoryLike::class, orphanRemoval: true)]
+    private Collection $likes;
 
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
-        $this->comments = new ArrayCollection();
-        $this->storyLikes = new ArrayCollection();
+        $this->comments   = new ArrayCollection();
+        $this->likes      = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -85,7 +80,6 @@ class Story
 
         return $this;
     }
-
 
     /**
      * @return Collection<int, Evenement>
@@ -144,7 +138,6 @@ class Story
     public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getStory() === $this) {
                 $comment->setStory(null);
             }
@@ -156,30 +149,44 @@ class Story
     /**
      * @return Collection<int, StoryLike>
      */
-    public function getStoryLikes(): Collection
+    public function getLikes(): Collection
     {
-        return $this->storyLikes;
+        return $this->likes;
     }
 
-    public function addStoryLike(StoryLike $storyLike): static
+    public function addLike(StoryLike $like): static
     {
-        if (!$this->storyLikes->contains($storyLike)) {
-            $this->storyLikes->add($storyLike);
-            $storyLike->setStory($this);
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
         }
 
         return $this;
     }
 
-    public function removeStoryLike(StoryLike $storyLike): static
+    public function removeLike(StoryLike $like): static
     {
-        if ($this->storyLikes->removeElement($storyLike)) {
-            // set the owning side to null (unless already changed)
-            if ($storyLike->getStory() === $this) {
-                $storyLike->setStory(null);
+        $this->likes->removeElement($like);
+
+        return $this;
+    }
+
+    public function getLikesCount(): int
+    {
+        return $this->likes->count();
+    }
+
+    public function isLikedByUser(?Utilisateur $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        foreach ($this->likes as $like) {
+            if ($like->getUtilisateur() === $user) {
+                return true;
             }
         }
 
-        return $this;
+        return false;
     }
 }

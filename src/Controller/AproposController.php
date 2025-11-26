@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 final class AproposController extends AbstractController
 {
-    #[Route('/templates/apropos', name: 'app_apropos')]
+    #[Route('/apropos', name: 'app_apropos')]
     public function index(): Response
     {
         // LIGNE DE DÉBOGAGE PHP AJOUTÉE : Décommentez pour vérifier le routage.

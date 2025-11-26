@@ -12,7 +12,7 @@ final class AproposController extends AbstractController
 
 {
 
-    #[Route('/a-propos', name: 'app_apropos')] // Utilisez un tiret
+    #[Route('/templates/apropos', name: 'app_apropos')] // Utilisez un tiret
 
     public function index(): Response
 

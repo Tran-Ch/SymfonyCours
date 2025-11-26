@@ -49,10 +49,17 @@ class Story
     #[ORM\OneToMany(mappedBy: 'story', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, StoryLike>
+     */
+    #[ORM\OneToMany(targetEntity: StoryLike::class, mappedBy: 'story')]
+    private Collection $storyLikes;
+
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->storyLikes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -140,6 +147,36 @@ class Story
             // set the owning side to null (unless already changed)
             if ($comment->getStory() === $this) {
                 $comment->setStory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StoryLike>
+     */
+    public function getStoryLikes(): Collection
+    {
+        return $this->storyLikes;
+    }
+
+    public function addStoryLike(StoryLike $storyLike): static
+    {
+        if (!$this->storyLikes->contains($storyLike)) {
+            $this->storyLikes->add($storyLike);
+            $storyLike->setStory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStoryLike(StoryLike $storyLike): static
+    {
+        if ($this->storyLikes->removeElement($storyLike)) {
+            // set the owning side to null (unless already changed)
+            if ($storyLike->getStory() === $this) {
+                $storyLike->setStory(null);
             }
         }
 

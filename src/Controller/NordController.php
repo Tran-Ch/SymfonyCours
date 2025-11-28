@@ -17,22 +17,18 @@ final class NordController extends AbstractController
     }
 
     // Trang 2: EXPÉRIENCE INCROYABLE DU NORD (grid các spot)
-    #[Route('/experience/nord/experience-incroyable', name: 'app_nord_incroyable')]
-    public function incroyable(ExperienceSpotRepository $spotRepository): Response
-    {
-        // lấy tất cả spot thuộc vùng Bắc + type "incroyable"
-        $spots = $spotRepository->findByRegionAndCategory('nord', 'incroyable');
+        #[Route('/experience/nord/experience-incroyable', name: 'app_nord_incroyable')]
+        public function incroyable(ExperienceSpotRepository $spotRepository): Response
+        {
+            $spots = $spotRepository->findBy(
+                ['region' => 'nord', 'category' => 'incroyable'],
+                ['id' => 'ASC']
+            );
 
-        // nếu không có method custom thì có thể dùng:
-        // $spots = $spotRepository->findBy(
-        //     ['region' => 'nord', 'category' => 'incroyable'],
-        //     ['id' => 'ASC']
-        // );
-
-        return $this->render('experience/nord/incroyable.html.twig', [
-            'spots' => $spots,
-        ]);
-    }
+            return $this->render('experience/nord/incroyable.html.twig', [
+                'spots' => $spots,
+            ]);
+        }
 
     // Trang 3: DÉCOUVREZ LA CULTURE DU NORD
     #[Route('/experience/nord/culture', name: 'app_nord_culture')]

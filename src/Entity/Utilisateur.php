@@ -65,15 +65,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, ExperienceSpotLike>
      */
-    #[ORM\OneToMany(targetEntity: ExperienceSpotLike::class, mappedBy: 'relation')]
+    #[ORM\OneToMany(
+        targetEntity: ExperienceSpotLike::class,
+        mappedBy: 'utilisateur'
+    )]
     private Collection $experienceSpotLikes;
 
     public function __construct()
     {
-        $this->stories = new ArrayCollection();
-        $this->evenements = new ArrayCollection();
-        $this->comments = new ArrayCollection();
-        $this->reservations = new ArrayCollection();
+        $this->stories             = new ArrayCollection();
+        $this->evenements          = new ArrayCollection();
+        $this->comments            = new ArrayCollection();
+        $this->reservations        = new ArrayCollection();
         $this->experienceSpotLikes = new ArrayCollection();
     }
 
@@ -101,6 +104,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
+        // Dùng email để login
         return (string) $this->email;
     }
 
@@ -110,8 +114,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+
+        // đảm bảo user nào cũng có ít nhất ROLE_USER
+        if (!\in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+        }
 
         return array_unique($roles);
     }
@@ -131,11 +138,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): ?string
     {
+        // Trả về đúng hash trong DB
         return $this->password;
     }
 
     public function setPassword(string $password): static
     {
+        // $password đã là dạng hash (do RegistrationController hash)
         $this->password = $password;
 
         return $this;
@@ -147,15 +156,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+
+        if ($this->password !== null) {
+            $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        }
 
         return $data;
     }
 
-    #[\Deprecated]
     public function eraseCredentials(): void
     {
-        // @deprecated, to be removed when upgrading to Symfony 8
+        // Nếu có field $plainPassword thì clear ở đây
+        // $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -191,7 +203,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeStory(Story $story): static
     {
         if ($this->stories->removeElement($story)) {
-            // set the owning side to null (unless already changed)
             if ($story->getUtilisateur() === $this) {
                 $story->setUtilisateur(null);
             }
@@ -245,9 +256,37 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getUtilisateur() === $this) {
                 $comment->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): static
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            if ($reservation->getUtilisateur() === $this) {
+                $reservation->setUtilisateur(null);
             }
         }
 
@@ -266,7 +305,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->experienceSpotLikes->contains($experienceSpotLike)) {
             $this->experienceSpotLikes->add($experienceSpotLike);
-            $experienceSpotLike->setRelation($this);
+            $experienceSpotLike->setUtilisateur($this);
         }
 
         return $this;
@@ -275,9 +314,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeExperienceSpotLike(ExperienceSpotLike $experienceSpotLike): static
     {
         if ($this->experienceSpotLikes->removeElement($experienceSpotLike)) {
-            // set the owning side to null (unless already changed)
-            if ($experienceSpotLike->getRelation() === $this) {
-                $experienceSpotLike->setRelation(null);
+            if ($experienceSpotLike->getUtilisateur() === $this) {
+                $experienceSpotLike->setUtilisateur(null);
             }
         }
 

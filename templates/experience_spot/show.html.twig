@@ -6,94 +6,172 @@
 {% block stylesheets %}
   {{ parent() }}
   <style>
-    .spot-header-card {
+    main {
+      margin-top: 130px;
+      padding: 40px 20px 60px 20px;
+      background-color: rgba(233, 238, 209, 1);
+    }
+
+    .spot-page {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .spot-main-card {
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      border-radius: 14px;
+      border-radius: 18px;
       overflow: hidden;
       background-color: #d7e48e;
+      margin-bottom: 24px;
     }
-    .spot-header-image {
+
+    .spot-main-image {
       width: 100%;
-      max-height: 320px;
+      max-height: 360px;
       object-fit: cover;
+      display: block;
     }
-    .spot-header-body {
-      padding: 16px 20px;
+
+    .spot-main-header {
+      padding: 16px 22px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .spot-main-header h1 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .spot-main-header small {
+      font-size: 13px;
+      color: #374325;
+    }
+
+    .spot-main-body {
+      padding: 18px 22px 20px 22px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #ffffff;
+    }
+
+    .spot-main-body p {
+      margin-bottom: 8px;
+    }
+
+    .spot-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 22px 14px 22px;
+      font-size: 13px;
+      color: #243013;
+    }
+
+    .spot-meta-bar span {
+      margin-left: 10px;
+    }
+
+    /* Comment list + form */
+    .spot-comments-title {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #3b4323;
+    }
+
+    @media (max-width: 768px) {
+      main {
+        margin-top: 110px;
+        padding: 30px 10px 40px 10px;
+      }
+      .spot-main-header h1 {
+        font-size: 20px;
+      }
     }
   </style>
 {% endblock %}
 
 {% block body %}
-<div class="container mt-4">
+<main>
+  <div class="spot-page">
 
-  {# Card header: ảnh + nút like #}
-  <div class="spot-header-card mb-4">
-    <img src="{{ asset('Image/nord/' ~ spot.imageFilename) }}"
-         alt="{{ spot.title }}"
-         class="spot-header-image">
+    {# CARD CHÍNH: ẢNH + TIÊU ĐỀ + MÔ TẢ DÀI + LIKE #}
+    <article class="spot-main-card">
+      <img src="{{ asset('Image/nord/' ~ spot.imageFilename) }}"
+           alt="{{ spot.title }}"
+           class="spot-main-image">
 
-    <div class="spot-header-body d-flex justify-content-between align-items-center">
-      <div>
-        <h3 class="mb-1">{{ spot.title }}</h3>
-        <small class="text-muted">
-          Région : {{ spot.region|capitalize }} – Catégorie : {{ spot.category|capitalize }}
-        </small>
+      <div class="spot-main-header d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="mb-1">{{ spot.title }}</h1>
+          <small>
+            Région : {{ spot.region|capitalize }} – Catégorie : {{ spot.category|capitalize }}
+          </small>
+        </div>
+
+        <form method="post" action="{{ path('app_experience_spot_like', {slug: spot.slug}) }}">
+          <button class="btn btn-sm {{ spot.isLikedByUser(app.user) ? 'btn-success' : 'btn-outline-success' }}">
+            ❤ {{ spot.likesCount }}
+            {{ spot.isLikedByUser(app.user) ? 'Je n’aime plus' : 'J’aime' }}
+          </button>
+        </form>
       </div>
 
-      <form method="post" action="{{ path('app_experience_spot_like', {slug: spot.slug}) }}">
-        <button class="btn btn-sm {{ spot.isLikedByUser(app.user) ? 'btn-success' : 'btn-outline-success' }}">
-          ❤ {{ spot.likesCount }}
-          {{ spot.isLikedByUser(app.user) ? 'Je n’aime plus' : 'J’aime' }}
-        </button>
-      </form>
-    </div>
+      <div class="spot-main-body">
+        {# dùng shortDescription như nội dung đầy đủ (đã lưu rất dài trong fixtures Hà Giang) #}
+        {{ spot.shortDescription|nl2br }}
+      </div>
 
-    <div class="px-4 pb-3">
-      <p class="mb-0">{{ spot.shortDescription|nl2br }}</p>
-    </div>
-  </div>
-
-  {# COMMENTAIRES #}
-  <h5 class="mb-3">Commentaires ({{ spot.comments|length }})</h5>
-
-  {% if spot.comments is not empty %}
-    <div class="list-group mb-4">
-      {% for comment in spot.comments %}
-        <div class="list-group-item">
-          <div class="d-flex justify-content-between">
-            <strong>{{ comment.utilisateur.prenom ?? comment.utilisateur.email ?? 'Utilisateur' }}</strong>
-            <small class="text-muted">{{ comment.date|date('d/m/Y H:i') }}</small>
-          </div>
-          <p class="mb-0 mt-2">{{ comment.text|nl2br }}</p>
+      <div class="spot-meta-bar">
+        <div>
+          <strong>Statistiques :</strong>
+          <span>♥ {{ spot.likesCount }} likes</span>
+          <span>💬 {{ spot.comments|length }} commentaires</span>
         </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p class="text-muted mb-4">Aucun commentaire pour l’instant.</p>
-  {% endif %}
+      </div>
+    </article>
 
-  {# FORM COMMENT #}
-  <div class="card mb-5">
-    <div class="card-header">Laisser un commentaire</div>
-    <div class="card-body">
-      {% if app.user %}
-        {{ form_start(commentForm) }}
-          {{ form_widget(commentForm) }}
-          <div class="mt-3 text-end">
-            <button type="submit" class="btn btn-primary">Publier</button>
+    {# COMMENTAIRES #}
+    <h5 class="spot-comments-title">Commentaires ({{ spot.comments|length }})</h5>
+
+    {% if spot.comments is not empty %}
+      <div class="list-group mb-4">
+        {% for comment in spot.comments %}
+          <div class="list-group-item">
+            <div class="d-flex justify-content-between">
+              <strong>{{ comment.utilisateur.prenom ?? comment.utilisateur.email ?? 'Utilisateur' }}</strong>
+              <small class="text-muted">{{ comment.date|date('d/m/Y H:i') }}</small>
+            </div>
+            <p class="mb-0 mt-2">{{ comment.text|nl2br }}</p>
           </div>
-        {{ form_end(commentForm) }}
-      {% else %}
-        <p class="text-muted">
-          Vous devez être connecté pour commenter.
-          <a href="{{ path('app_login') }}">Se connecter</a>
-        </p>
-      {% endif %}
-    </div>
-  </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted mb-4">Aucun commentaire pour l’instant.</p>
+    {% endif %}
 
-  <a href="{{ path('app_nord_incroyable') }}" class="btn btn-outline-secondary">
-    ← Retour à la liste
-  </a>
-</div>
+    {# FORM COMMENT #}
+    <div class="card mb-4">
+      <div class="card-header">Laisser un commentaire</div>
+      <div class="card-body">
+        {% if app.user %}
+          {{ form_start(commentForm) }}
+            {{ form_widget(commentForm) }}
+            <div class="mt-3 text-end">
+              <button type="submit" class="btn btn-primary">Publier</button>
+            </div>
+          {{ form_end(commentForm) }}
+        {% else %}
+          <p class="text-muted">
+            Vous devez être connecté pour commenter.
+            <a href="{{ path('app_login') }}">Se connecter</a>
+          </p>
+        {% endif %}
+      </div>
+    </div>
+
+    <a href="{{ path('app_nord_incroyable') }}" class="btn btn-outline-secondary">
+      ← Retour à la liste
+    </a>
+  </div>
+</main>
 {% endblock %}

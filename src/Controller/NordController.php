@@ -16,14 +16,14 @@ final class NordController extends AbstractController
         return $this->render('experience/nord/index.html.twig');
     }
 
-    // Trang 2: EXPÉRIENCE INCROYABLE DU NORD
+    // Trang 2: EXPÉRIENCE INCROYABLE DU NORD (grid các spot)
     #[Route('/experience/nord/experience-incroyable', name: 'app_nord_incroyable')]
     public function incroyable(ExperienceSpotRepository $spotRepository): Response
     {
-        // Cách 1: dùng custom method
+        // lấy tất cả spot thuộc vùng Bắc + type "incroyable"
         $spots = $spotRepository->findByRegionAndCategory('nord', 'incroyable');
 
-        // Cách 2: dùng findBy mặc định (kết quả tương đương):
+        // nếu không có method custom thì có thể dùng:
         // $spots = $spotRepository->findBy(
         //     ['region' => 'nord', 'category' => 'incroyable'],
         //     ['id' => 'ASC']

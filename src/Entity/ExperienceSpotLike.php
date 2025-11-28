@@ -17,7 +17,7 @@ class ExperienceSpotLike
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?ExperienceSpot $spot = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'experienceSpotLikes')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Utilisateur $utilisateur = null;
 
@@ -34,6 +34,7 @@ class ExperienceSpotLike
     public function setSpot(?ExperienceSpot $spot): static
     {
         $this->spot = $spot;
+
         return $this;
     }
 
@@ -45,6 +46,7 @@ class ExperienceSpotLike
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
+
         return $this;
     }
 }

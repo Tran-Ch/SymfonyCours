@@ -15,7 +15,7 @@ class ExperienceSpot
     #[ORM\Column]
     private ?int $id = null;
 
-    // Tiêu đề hiển thị trên card
+    // Tiêu đề hiển thị trên card + trang chi tiết
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -31,7 +31,7 @@ class ExperienceSpot
     #[ORM\Column(length: 20)]
     private ?string $category = null;
 
-    // đoạn text mô tả cho card (giống bạn đang để trong Twig)
+    // Nội dung mô tả: dùng cả cho card (có thể cắt ngắn) và trang chi tiết
     #[ORM\Column(type: 'text')]
     private ?string $shortDescription = null;
 
@@ -61,8 +61,8 @@ class ExperienceSpot
 
     public function __construct()
     {
-        $this->likes     = new ArrayCollection();
-        $this->comments  = new ArrayCollection();
+        $this->likes    = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -165,11 +165,13 @@ class ExperienceSpot
         return $this;
     }
 
+    // Đếm tổng số like
     public function getLikesCount(): int
     {
         return $this->likes->count();
     }
 
+    // Kiểm tra 1 user đã like spot này chưa (dùng cho nút J’aime / Je n’aime plus)
     public function isLikedByUser(?Utilisateur $user): bool
     {
         if (!$user) {

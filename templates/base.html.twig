@@ -594,14 +594,24 @@
                 <a class="nav-link custom-link" href="{{ path('app_experience') }}">Expérience</a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link custom-link" href="{{ path('app_story_public_list') }}">Histoires</a>
+            </li>
+
             {# Nếu đã đăng nhập: hiện Story (trang cá nhân) + Logout #}
             {% if app.user %}
                 <li class="nav-item">
                     <a class="nav-link custom-link" href="{{ path('app_my_stories') }}">Story</a>
                 </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link custom-link" href="{{ path('app_profile_edit') }}">Mon profil</a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link custom-link" href="{{ path('app_logout') }}">Déconnexion</a>
                 </li>
+
             {% else %}
                 {# Nếu chưa đăng nhập: chỉ hiện Login #}
                 <li class="nav-item">
@@ -612,6 +622,7 @@
             <li class="nav-item">
                 <a class="nav-link custom-link" href="#">Langue</a>
             </li>
+
         </ul>
 
         </div>

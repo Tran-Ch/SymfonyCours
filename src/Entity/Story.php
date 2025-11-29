@@ -8,6 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Evenement;
+use App\Entity\Utilisateur;
+use App\Entity\Comment;
+use App\Entity\StoryLike;
 
 #[ORM\Entity(repositoryClass: StoryRepository::class)]
 class Story
@@ -50,6 +54,10 @@ class Story
     #[ORM\OneToMany(mappedBy: 'story', targetEntity: StoryLike::class, orphanRemoval: true)]
     private Collection $likes;
 
+    // === NEW: Story public / privé ===
+    #[ORM\Column(type: 'boolean')]
+    private bool $isPublic = true;
+
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
@@ -65,7 +73,6 @@ class Story
     public function setId(int $id): static
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -77,7 +84,6 @@ class Story
     public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
-
         return $this;
     }
 
@@ -94,14 +100,12 @@ class Story
         if (!$this->evenements->contains($evenement)) {
             $this->evenements->add($evenement);
         }
-
         return $this;
     }
 
     public function removeEvenement(Evenement $evenement): static
     {
         $this->evenements->removeElement($evenement);
-
         return $this;
     }
 
@@ -113,7 +117,6 @@ class Story
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
-
         return $this;
     }
 
@@ -131,7 +134,6 @@ class Story
             $this->comments->add($comment);
             $comment->setStory($this);
         }
-
         return $this;
     }
 
@@ -142,7 +144,6 @@ class Story
                 $comment->setStory(null);
             }
         }
-
         return $this;
     }
 
@@ -158,15 +159,18 @@ class Story
     {
         if (!$this->likes->contains($like)) {
             $this->likes->add($like);
+            $like->setStory($this);
         }
-
         return $this;
     }
 
     public function removeLike(StoryLike $like): static
     {
-        $this->likes->removeElement($like);
-
+        if ($this->likes->removeElement($like)) {
+            if ($like->getStory() === $this) {
+                $like->setStory(null);
+            }
+        }
         return $this;
     }
 
@@ -180,13 +184,23 @@ class Story
         if (!$user) {
             return false;
         }
-
         foreach ($this->likes as $like) {
             if ($like->getUtilisateur() === $user) {
                 return true;
             }
         }
-
         return false;
+    }
+
+    // === GET/SET isPublic ===
+    public function isPublic(): bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(bool $isPublic): static
+    {
+        $this->isPublic = $isPublic;
+        return $this;
     }
 }

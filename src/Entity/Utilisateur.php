@@ -35,6 +35,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    // Tên hiển thị mà user chọn
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom = null;
 
@@ -180,6 +181,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->nom = $nom;
 
         return $this;
+    }
+
+    /**
+     * Alias cho compat với Twig cũ dùng "prenom"
+     */
+    public function getPrenom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setPrenom(?string $prenom): static
+    {
+        $this->nom = $prenom;
+        return $this;
+    }
+
+    /**
+     * Tên hiển thị ưu tiên: nom (tên người dùng) -> email -> 'Utilisateur'
+     */
+    public function getDisplayName(): string
+    {
+        if ($this->nom !== null && trim($this->nom) !== '') {
+            return $this->nom;
+        }
+
+        if ($this->email !== null && trim($this->email) !== '') {
+            return $this->email;
+        }
+
+        return 'Utilisateur';
     }
 
     /**

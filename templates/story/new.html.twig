@@ -1,3 +1,4 @@
+{# templates/story/new.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Nouvelle histoire{% endblock %}
@@ -5,11 +6,11 @@
 {% block body %}
     <div class="container mt-5">
         <h1 class="mb-4">Créer une nouvelle histoire</h1>
-        
+
         <div class="card">
             <div class="card-body">
                 {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-                    
+
                     {# Champ Utilisateur (caché si l'utilisateur est connecté) #}
                     {% if not app.user %}
                         <div class="mb-3">
@@ -20,7 +21,7 @@
                     {% else %}
                         {{ form_widget(form.utilisateur, {'attr': {'class': 'd-none'}}) }}
                     {% endif %}
-                    
+
                     {# Champ Contenu #}
                     <div class="mb-3">
                         {{ form_label(form.contenu, 'Votre histoire', {'label_attr': {'class': 'form-label'}}) }}
@@ -32,7 +33,7 @@
                         <div class="form-text">Partagez votre expérience avec la communauté</div>
                         {{ form_errors(form.contenu) }}
                     </div>
-                    
+
                     {# Champ Événements #}
                     <div class="mb-4">
                         {{ form_label(form.evenements, 'Événements associés', {'label_attr': {'class': 'form-label'}}) }}
@@ -43,7 +44,14 @@
                         <div class="form-text">Maintenez la touche Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs événements</div>
                         {{ form_errors(form.evenements) }}
                     </div>
-                    
+
+                    {# NEW: Story publique ? #}
+                    <div class="form-check mb-4">
+                        {{ form_widget(form.isPublic) }}
+                        {{ form_label(form.isPublic, null, {'label_attr': {'class': 'form-check-label ms-2'}}) }}
+                        {{ form_errors(form.isPublic) }}
+                    </div>
+
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a href="{{ path('app_home') }}" class="btn btn-outline-secondary me-md-2">Annuler</a>
                         <button type="submit" class="btn btn-primary">

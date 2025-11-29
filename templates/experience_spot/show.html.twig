@@ -6,11 +6,11 @@
 {% block stylesheets %}
   {{ parent() }}
   <style>
-    main {
+    /* main {
       margin-top: 130px;
       padding: 40px 20px 60px 20px;
       background-color: rgba(233, 238, 209, 1);
-    }
+    } */
 
     .spot-page {
       max-width: 980px;
@@ -27,7 +27,7 @@
 
     .spot-main-image {
       width: 100%;
-      max-height: 360px;
+      max-height: 500px;
       object-fit: cover;
       display: block;
     }
@@ -51,7 +51,8 @@
       padding: 18px 22px 20px 22px;
       font-size: 14px;
       line-height: 1.8;
-      color: #ffffff;
+      color: #rgba(90, 92, 30, 1);
+      text-align: left !important; /* text canh trái */
     }
 
     .spot-main-body p {
@@ -138,7 +139,7 @@
         {% for comment in spot.comments %}
           <div class="list-group-item">
             <div class="d-flex justify-content-between">
-              <strong>{{ comment.utilisateur.prenom ?? comment.utilisateur.email ?? 'Utilisateur' }}</strong>
+              <strong>{{ comment.utilisateur ? comment.utilisateur.displayName : 'Utilisateur' }}</strong>
               <small class="text-muted">{{ comment.date|date('d/m/Y H:i') }}</small>
             </div>
             <p class="mb-0 mt-2">{{ comment.text|nl2br }}</p>

@@ -1,19 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Créer un compte{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="container mt-5" style="max-width: 600px;">
+        <h1 class="mb-4">Créer un compte</h1>
 
-    {{ form_errors(registrationForm) }}
+        {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+        {{ form_start(registrationForm) }}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            {# TÊN HIỂN THỊ #}
+            {{ form_row(registrationForm.nom, {
+                label: 'Nom ou pseudo'
+            }) }}
+
+            {# EMAIL #}
+            {{ form_row(registrationForm.email, {
+                label: 'Adresse e-mail'
+            }) }}
+
+            {# MẬT KHẨU + CONFIRM #}
+            {{ form_row(registrationForm.plainPassword, {
+                label: 'Mot de passe'
+            }) }}
+
+            {# RGPD #}
+            {{ form_row(registrationForm.agreeTerms) }}
+
+            <button type="submit" class="btn btn-primary mt-3">
+                Créer mon compte
+            </button>
+        {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}

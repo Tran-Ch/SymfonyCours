@@ -196,4 +196,18 @@ class StoryController extends AbstractController
             'stories' => $stories,
         ]);
     }
+
+    #[Route('/stories', name: 'app_story_public_list')]
+    public function publicList(StoryRepository $storyRepository): Response
+    {
+        // lấy tất cả story public, mới nhất trước
+        $stories = $storyRepository->findBy(
+            ['isPublic' => true],
+            ['id' => 'DESC']
+        );
+
+        return $this->render('story/public_list.html.twig', [
+            'stories' => $stories,
+        ]);
+    }
 }

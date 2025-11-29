@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Histoires de la communauté{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        main {
+            margin-top: 130px;
+            padding: 40px 20px 60px 20px;
+            background-color: rgba(233, 238, 209, 1);
+        }
+
+        .stories-page {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .stories-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stories-header h1 {
+            font-size: 26px;
+            color: #4a5932;
+            margin: 0;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .story-card {
+            background-color: #d7e48e;
+            border-radius: 14px;
+            padding: 12px 14px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .story-card-header {
+            font-weight: bold;
+            font-size: 14px;
+            color: #3d4a27;
+            margin-bottom: 6px;
+        }
+
+        .story-card-body {
+            font-size: 13px;
+            color: #334;
+            flex-grow: 1;
+        }
+
+        .story-card-footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #566;
+        }
+
+        @media (max-width: 992px) {
+            .stories-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 576px) {
+            main {
+                margin-top: 110px;
+                padding: 25px 10px 40px 10px;
+            }
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="stories-page">
+    <div class="stories-header">
+        <h1>Histoires de la communauté</h1>
+        {% if app.user %}
+            <a href="{{ path('app_story_new') }}" class="btn btn-long">+ Écrire une histoire</a>
+        {% endif %}
+    </div>
+
+    {% if stories is empty %}
+        <p class="text-muted">Aucune histoire publique pour l’instant.</p>
+    {% else %}
+        <div class="stories-grid">
+            {% for story in stories %}
+                <article class="story-card">
+                    <div class="story-card-header">
+                        {# trước: story.utilisateur.prenom ?? story.utilisateur.email ?? 'Utilisateur' #}
+                        {{ story.utilisateur.displayName }}
+                    </div>
+
+                    <div class="story-card-body">
+                        {{ story.contenu|slice(0, 160) ~ (story.contenu|length > 160 ? '...' : '') }}
+                    </div>
+
+                    <div class="story-card-footer">
+                        <span>
+                            ❤ {{ story.likesCount }} · {{ story.comments|length }} commentaires
+                        </span>
+                        <a href="{{ path('app_story_show', {id: story.id}) }}"
+                           class="btn btn-sm btn-outline-success">
+                            Voir
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@ use App\Entity\Story;
 use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -19,14 +20,16 @@ class StoryType extends AbstractType
     {
         $isEdit = $options['is_edit'] ?? false;
         $isUserLoggedIn = $options['user_logged_in'] ?? false;
-        
+
         $builder
             // Champ utilisateur (affiché uniquement si l'utilisateur n'est pas connecté)
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
-                'choice_label' => 'email',
+                // trước đây: 'choice_label' => 'email',
+                'choice_label' => 'displayName',
                 'label' => 'Auteur',
                 'required' => !$isUserLoggedIn,
+                // phần còn lại giữ nguyên
                 'constraints' => !$isUserLoggedIn ? [
                     new NotBlank([
                         'message' => 'Veuillez sélectionner un auteur',
@@ -41,7 +44,7 @@ class StoryType extends AbstractType
                 'placeholder' => !$isUserLoggedIn ? 'Sélectionnez un auteur' : '',
                 'group_by' => null
             ])
-            
+
             // Champ contenu
             ->add('contenu', TextareaType::class, [
                 'label' => 'Votre histoire',
@@ -56,7 +59,7 @@ class StoryType extends AbstractType
                     ])
                 ]
             ])
-            
+
             // Champ événements
             ->add('evenements', EntityType::class, [
                 'class' => Evenement::class,
@@ -74,6 +77,17 @@ class StoryType extends AbstractType
                     'data-placeholder' => 'Rechercher un événement...'
                 ]
             ])
+
+            // NEW: Story publique / privée
+            ->add('isPublic', CheckboxType::class, [
+                'label' => 'Rendre cette histoire publique (visible par tous)',
+                'required' => false,
+                // khi tạo mới: mặc định public = true ; khi edit: giữ giá trị hiện tại
+                'data' => $isEdit ? null : true,
+                'mapped' => true,
+                'label_attr' => ['class' => 'form-check-label'],
+                'attr' => ['class' => 'form-check-input'],
+            ])
         ;
     }
 
@@ -86,16 +100,16 @@ class StoryType extends AbstractType
             'validation_groups' => function (FormInterface $form) {
                 $data = $form->getData();
                 $groups = ['Default'];
-                
+
                 // Si l'utilisateur n'est pas connecté, on ajoute le groupe de validation
                 if (!$data->getUtilisateur()) {
                     $groups[] = 'anonymous';
                 }
-                
+
                 return $groups;
             },
         ]);
-        
+
         $resolver->setAllowedTypes('is_edit', 'bool');
         $resolver->setAllowedTypes('user_logged_in', 'bool');
     }

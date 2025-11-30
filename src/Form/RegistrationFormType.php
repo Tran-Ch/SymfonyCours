@@ -42,7 +42,7 @@ class RegistrationFormType extends AbstractType
             // MẬT KHẨU (nhập 2 lần)
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'mapped' => false, // vẫn để controller tự hash
+                'mapped' => false, // controller sẽ hash
                 'invalid_message' => 'Les deux mots de passe doivent correspondre.',
                 'first_options'  => [
                     'label' => 'Mot de passe',

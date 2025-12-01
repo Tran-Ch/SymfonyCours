@@ -3,7 +3,7 @@
 {% block title %}Mon profil{% endblock %}
 
 {% block body %}
-<div class="container mt-4" style="max-width: 600px;">
+<div class="container mt-4" style="max-width: 650px;">
     <h1 class="mb-4">Mon profil</h1>
 
     {% for label, messages in app.flashes %}
@@ -14,18 +14,42 @@
 
     <div class="card">
         <div class="card-body">
-            <p class="mb-3">
-                Connecté en tant que <strong>{{ user.email }}</strong>
-            </p>
 
-            {{ form_start(form) }}
+            <div class="d-flex align-items-center mb-4">
+                <img src="{{ asset(user.avatarPath) }}"
+                     alt="avatar"
+                     class="rounded-circle me-3"
+                     style="width:80px;height:80px;object-fit:cover;border:2px solid #a7b942;">
+                <div>
+                    <p class="mb-1">
+                        Connecté en tant que <strong>{{ user.email }}</strong>
+                    </p>
+                    <p class="mb-0 text-muted">
+                        Nom affiché : <strong>{{ user.displayName }}</strong>
+                    </p>
+                </div>
+            </div>
+
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
                 {{ form_row(form.nom, {
                     label: 'Nom ou pseudo affiché sur vos stories'
                 }) }}
 
+                <hr class="my-3">
+
+                <h5 class="mb-3">Avatar</h5>
+
+                {{ form_row(form.avatar) }}
+
+                <div class="mt-2">
+                    {{ form_row(form.removeAvatar) }}
+                </div>
+
                 <button type="submit" class="btn btn-primary mt-3">
                     Enregistrer
                 </button>
+
             {{ form_end(form) }}
         </div>
     </div>

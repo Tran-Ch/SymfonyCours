@@ -31,11 +31,11 @@ class ExperienceSpot
     #[ORM\Column(length: 20)]
     private ?string $category = null;
 
-    // Nội dung mô tả: dùng cả cho card (có thể cắt ngắn) và trang chi tiết
+    // Nội dung mô tả: dùng cho card (cắt ngắn) + trang chi tiết
     #[ORM\Column(type: 'text')]
     private ?string $shortDescription = null;
 
-    // tên file ảnh: hagiang.jpg, sapa.jpg...
+    // Tên file ảnh: hagiang.jpg, sapa.jpg, ...
     #[ORM\Column(length: 255)]
     private ?string $imageFilename = null;
 
@@ -137,6 +137,25 @@ class ExperienceSpot
     }
 
     /**
+     * Đường dẫn ảnh đầy đủ cho Twig: {{ asset(spot.imagePath) }}
+     * Giữ cây thư mục:
+     *   public/Image/bac/
+     *   public/Image/trung/
+     *   public/Image/nam/
+     */
+    public function getImagePath(): string
+    {
+        $subDir = match ($this->region) {
+            'nord'   => 'bac',
+            'centre' => 'trung',
+            'sud'    => 'nam',
+            default  => 'bac',
+        };
+
+        return 'Image/' . $subDir . '/' . $this->imageFilename;
+    }
+
+    /**
      * @return Collection<int, ExperienceSpotLike>
      */
     public function getLikes(): Collection
@@ -146,7 +165,7 @@ class ExperienceSpot
 
     public function addLike(ExperienceSpotLike $like): static
     {
-        if (!$this->likes->contains($like)) {
+        if (!$this->likes->contains($$like)) {
             $this->likes->add($like);
             $like->setSpot($this);
         }

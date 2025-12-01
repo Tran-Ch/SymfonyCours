@@ -15,17 +15,15 @@
         background-color: transparent;
     }
 
-    /* ===== LAYOUT 2 CỘT: MAP TRÁI – NỘI DUNG PHẢI ===== */
     .centre-wrapper {
-        max-width: 1600px;  /* tăng giới hạn chiều rộng layout để map to hơn trên màn hình lớn */
+        max-width: 1600px;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); /* cột trái rộng hơn cột phải để map lớn hơn */
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
         gap: 40px;
         align-items: flex-start;
     }
 
-    /* cột trái: map + card tỉnh – xếp dọc, căn giữa theo ngang */
     .centre-map-card {
         background-color: transparent;
         border-radius: 20px;
@@ -33,7 +31,7 @@
         box-shadow: none;
         display: flex;
         flex-direction: column;
-        align-items: center; /* card nằm giữa map theo trục ngang */
+        align-items: center;
     }
 
     .centre-right {
@@ -59,6 +57,7 @@
         gap: 10px;
     }
 
+    /* NÚT CHÍNH CỦA CENTRE – LÀM CHUẨN MÀU CHO 3 MIỀN */
     .centre-main-btn {    
         background-color: rgba(216, 228, 159, 1);
         border-radius: 12px;
@@ -76,17 +75,15 @@
       transform: translateY(-1px);
     }
 
-    /* đoạn giới thiệu ngắn (đoạn số 1) */
     .centre-intro {
         font-size: 14px;
-        color: #dbe8d2;      /* màu nhạt hơn, bạn có thể đổi */
+        color: #dbe8d2;
         line-height: 1.6;
     }
 
-    /* đoạn mô tả dài (đoạn số 2) */
     .centre-description {
         font-size: 16px;
-        color: #6d8778;      /* màu sáng hơn */
+        color: #6d8778;
         line-height: 1.6;
     }
 
@@ -97,9 +94,6 @@
         margin-bottom: 6px;
     }
 
-    /* ===== PHẦN MAP SVG + CARD TỈNH ===== */
-
-    /* Khung chứa map */
     .map-section {
         width: 100%;
         display: flex;
@@ -111,23 +105,20 @@
         overflow: visible;
     }
 
-    /* Container map – co giãn theo màn hình */
     .map-container {
         position: relative;
         display: block;
         width: 100%;
-        max-width: 1200px;   /* map to trên màn hình lớn, vẫn nằm trong cột trái */
-        margin-top: -150px;  /* muốn kéo lên / xuống thì chỉnh ở đây */
+        max-width: 1200px;
+        margin-top: -150px;
     }
 
-    /* SVG map – full chiều ngang container, không dùng scale */
     .map-container svg {
         display: block;
         width: 100%;
         height: auto;
     }
 
-    /* hiệu ứng hover tỉnh */
     .province > g path {
       transition: fill 0.25s ease, opacity 0.25s ease, stroke-width 0.25s ease;
     }
@@ -139,7 +130,6 @@
       cursor: pointer;
     }
 
-    /* chữ label tỉnh */
     .province > path {
         transition: fill 0.25s ease;
     }
@@ -148,7 +138,6 @@
         fill: #c97a38;
     }
 
-    /* tooltip tên tỉnh */
     #tooltip {
         position: fixed;
         background: rgba(0,0,0,0.8);
@@ -163,59 +152,51 @@
         z-index: 9999;
     }
 
-    /* card thông tin tỉnh thành – nằm dưới đoạn mô tả bên phải */
     .city-info-wrapper {
-        width: 100%;        /* cùng chiều rộng với cột phải */
+        width: 100%;
         max-width: 480px;
-        margin: 5px auto 0;    /* cách đoạn mô tả 1 chút */
-        display: flex;        /* dùng flex để canh card  */
+        margin: 5px auto 0;
+        display: flex;
         justify-content: center;
     }
 
-    /* Khung card tổng thể */
     #city-info.card {
-        max-width: 100%;         /* kích thước card linh hoạt */
+        max-width: 100%;
         border-radius: 8px;
-        overflow: hidden;         /* bo tròn cả header + thân */
+        overflow: hidden;
         box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         border: none;
     }
 
-    /* Header màu xanh đậm, chữ trắng, căn trái */
     #city-info .card-header {
-        background-color: #406459 !important; /* giống màu bạn đang dùng */
+        background-color: #406459 !important;
         color: #ffffff;
         font-weight: 600;
         font-size: 16px;
         padding: 8px 16px;
     }
 
-    /* Phần body trắng */
     #city-info .card-body {
         background-color: #ffffff;
         padding: 12px 20px;
     }
 
-    /* Các dòng thông tin bên trong */
     #city-info .list-group-item {
         border-left: 0;
         border-right: 0;
-        border-color: #e0e0e0;        /* màu đường kẻ mảnh giữa các dòng */
+        border-color: #e0e0e0;
         font-size: 14px;
         padding: 8px 0;
     }
 
-    /* bỏ đường kẻ trên cùng để giống hình */
     #city-info .list-group-item:first-child {
         border-top: 0;
     }
 
-    /* tiêu đề từng dòng (Superficie, Population, Description…) */
     #city-info .list-group-item strong {
         font-weight: 600;
     }
 
-    /* đoạn mô tả dài */
     #city-info .city-desc {
         margin-top: 4px;
         line-height: 1.5;
@@ -225,8 +206,6 @@
       background-color: #406459 !important;
     }
 
-    /* ===== RESPONSIVE ===== */
-
     @media (max-width: 1200px) {
         .centre-wrapper {
             grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
@@ -234,13 +213,13 @@
         }
 
         .map-container {
-            max-width: 520px;  /* map thu nhỏ vừa với màn hình trung bình */
+            max-width: 520px;
         }
     }
 
     @media (max-width: 992px) {
         .centre-wrapper {
-            grid-template-columns: 1fr;  /* map trên, text dưới */
+            grid-template-columns: 1fr;
             margin: 0 auto;
         }
 
@@ -250,12 +229,12 @@
 
         .map-container {
             max-width: 420px;
-            margin: 0 auto;           /* căn giữa map */
+            margin: 0 auto;
         }
 
         .city-info-wrapper {
             max-width: 480px;
-            margin: 16px auto 0;      /* card nằm giữa khi xuống 1 cột */
+            margin: 16px auto 0;
             justify-content: center;
         }
     }
@@ -296,7 +275,6 @@
 
 {% block body %}
   <section class="centre-wrapper">
-    {# CỘT TRÁI: MAP #}
     <div class="centre-map-card">
       <div class="map-section">
         <div class="map-container">
@@ -469,16 +447,18 @@
 
         <div class="centre-btn-box">
             <button class="centre-main-btn"
-                    onclick="window.location.href='{{ path('app_centre_incroyable') }}'">
-              EXPÉRIENCE INCROYABLE
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'centre', category: 'incroyable'}) }}'">
+                EXPÉRIENCE INCROYABLE
             </button>
+
             <button class="centre-main-btn"
-                    onclick="window.location.href='{{ path('app_centre_culture') }}'">
-              DÉCOUVREZ LA CULTURE
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'centre', category: 'culture'}) }}'">
+                DÉCOUVREZ LA CULTURE
             </button>
+
             <button class="centre-main-btn"
-                    onclick="window.location.href='{{ path('app_centre_tourisme') }}'">
-              TOURISME DE VACANCES
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'centre', category: 'tourisme'}) }}'">
+                TOURISME DE VACANCES
             </button>
         </div>
 

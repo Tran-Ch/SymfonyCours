@@ -124,84 +124,113 @@
     </p>
 
     <div class="grid-wrapper">
+      {# 1) Si on a des spots depuis le contrôleur #}
+      {% if spots is defined and spots|length > 0 %}
+        {% for spot in spots %}
+          <article class="grid-card"
+                  onclick="window.location='{{ path('app_experience_spot_show', {slug: spot.slug}) }}'">
+            <div class="grid-card-title">
+              {{ spot.title }}
+            </div>
 
-      {% set items = [
-        {
-          'title': 'Sapa – Séjour de luxe au-dessus d’une mer de nuages',
-          'image': 'sapa-tourisme.jpg',
-          'text': "Sapa est l’icône du bien-être en montagne.
+            <img
+              src="{{ asset('Image/bac/' ~ spot.imageFilename) }}"
+              alt="{{ spot.title }}"
+              class="grid-card-image"
+            >
+
+            <div class="grid-card-text">
+              {{ spot.shortDescription|slice(0, 260)|nl2br }}{% if spot.shortDescription|length > 260 %}…{% endif %}
+            </div>
+
+            <div class="grid-card-footer">
+              ♥ {{ spot.likesCount }} likes – {{ spot.comments|length }} comments
+            </div>
+          </article>
+        {% endfor %}
+
+      {# 2) Fallback sur le contenu statique si pas de données #}
+      {% else %}
+        {% set items = [
+          {
+            'title': 'Sapa – Séjour de luxe au-dessus d’une mer de nuages',
+            'image': 'sapa-tourisme.jpg',
+            'text': "Sapa est l’icône du bien-être en montagne.
 Les resorts perchés sur les pentes offrent des piscines à débordement avec vue panoramique sur la vallée de Mường Hoa, donnant l’impression de flotter au-dessus des nuages.
 Le matin, savourez une tasse de thé chaud dans la brume légère ; le soir, laissez-vous envelopper par un spa aux herbes traditionnelles.
 Un luxe discret, en parfaite harmonie avec la nature."
-        },
-        {
-          'title': 'Baie d’Halong – Détente en bord de mer au cœur d’un site classé UNESCO',
-          'image': 'halong-tourisme.jpg',
-          'text': "La baie d’Halong ne se limite pas aux croisières : elle abrite également de nombreux resorts haut de gamme en bord de mer.
+          },
+          {
+            'title': 'Baie d’Halong – Détente en bord de mer au cœur d’un site classé UNESCO',
+            'image': 'halong-tourisme.jpg',
+            'text': "La baie d’Halong ne se limite pas aux croisières : elle abrite également de nombreux resorts haut de gamme en bord de mer.
 Profitez d’une plage privée, admirez le coucher du soleil sur les formations karstiques ou offrez-vous un soin spa marin.
 Un séjour où le raffinement rencontre la splendeur naturelle."
-        },
-        {
-          'title': 'Sources thermales de Kim Bôi – Bien-être & thérapie naturelle',
-          'image': 'kimboi.jpg',
-          'text': "Kim Bôi est la destination idéale pour combiner détente et soins du corps.
+          },
+          {
+            'title': 'Sources thermales de Kim Bôi – Bien-être & thérapie naturelle',
+            'image': 'kimboi.jpg',
+            'text': "Kim Bôi est la destination idéale pour combiner détente et soins du corps.
 Ses sources chaudes naturelles, ses spas thérapeutiques, ses bains de boue et son environnement verdoyant créent une expérience de relaxation totale.
 Un séjour wellness élégant et revitalisant."
-        },
-        {
-          'title': 'Đồng Văn – Lũng Cú : l’art du “mountain retreat”',
-          'image': 'dongvan-retreat.jpg',
-          'text': "Parfait pour les voyageurs en quête de détente avec une touche d’aventure.
+          },
+          {
+            'title': 'Đồng Văn – Lũng Cú : l’art du “mountain retreat”',
+            'image': 'dongvan-retreat.jpg',
+            'text': "Parfait pour les voyageurs en quête de détente avec une touche d’aventure.
 Les lodges et homestays haut de gamme se fondent dans le paysage rocheux, offrant des vues spectaculaires sur les vallées.
 Une expérience de bien-être unique, entre confort et nature sauvage."
-        },
-        {
-          'title': 'Yên Tử – Méditation, sérénité et retraite spirituelle',
-          'image': 'yentu.jpg',
-          'text': "Yên Tử n’est pas seulement un site spirituel : c’est aussi une destination idéale pour un séjour zen & wellness.
+          },
+          {
+            'title': 'Yên Tử – Méditation, sérénité et retraite spirituelle',
+            'image': 'yentu.jpg',
+            'text': "Yên Tử n’est pas seulement un site spirituel : c’est aussi une destination idéale pour un séjour zen & wellness.
 Les resorts inspirés de l’architecture des pagodes créent une atmosphère paisible, propice à la méditation et au ressourcement.
 Un lieu parfait pour retrouver l’équilibre intérieur."
-        },
-        {
-          'title': 'Lac de Hòa Bình – Détente au bord d’un lac majestueux',
-          'image': 'hoabinh-lake.jpg',
-          'text': "Le lac de Hòa Bình séduit par son eau turquoise, ses montagnes environnantes et son air pur.
+          },
+          {
+            'title': 'Lac de Hòa Bình – Détente au bord d’un lac majestueux',
+            'image': 'hoabinh-lake.jpg',
+            'text': "Le lac de Hòa Bình séduit par son eau turquoise, ses montagnes environnantes et son air pur.
 Les resorts situés au bord du lac proposent piscines à débordement, kayak, balades en bateau et espaces de relaxation.
 Un cadre idéal pour un retreat en pleine nature."
-        },
-        {
-          'title': 'Cát Bà – Entre mer, forêt et resorts de charme',
-          'image': 'catba.jpg',
-          'text': "Cát Bà offre une combinaison rare entre plages, falaises et parc national.
+          },
+          {
+            'title': 'Cát Bà – Entre mer, forêt et resorts de charme',
+            'image': 'catba.jpg',
+            'text': "Cát Bà offre une combinaison rare entre plages, falaises et parc national.
 Les resorts sur la baie de Lan Hạ bénéficient de vues imprenables sur la mer, parfaits pour un séjour luxueux mais paisible.
 Une alternative élégante et plus tranquille que Halong."
-        },
-        {
-          'title': 'Sources thermales de Thanh Thủy (Phú Thọ)',
-          'image': 'thanhthuy.jpg',
-          'text': "L’une des rares sources chaudes naturelles du Nord.
+          },
+          {
+            'title': 'Sources thermales de Thanh Thủy (Phú Thọ)',
+            'image': 'thanhthuy.jpg',
+            'text': "L’une des rares sources chaudes naturelles du Nord.
 Plongez dans une eau minérale bienfaisante au milieu des montagnes, profitez de soins spa et d’un environnement parfaitement calme.
 Une destination idéale pour un séjour bien-être et santé."
-        }
-      ] %}
+          }
+        ] %}
 
-      {% for item in items %}
-        <article class="grid-card">
-          <div class="grid-card-title">{{ item.title }}</div>
+        {% for item in items %}
+          <article class="grid-card">
+            <div class="grid-card-title">{{ item.title }}</div>
 
-          <img
-            src="{{ asset('Image/bac/' ~ item.image) }}"
-            alt="{{ item.title }}"
-            class="grid-card-image"
-          >
+            <img
+              src="{{ asset('Image/bac/' ~ item.image) }}"
+              alt="{{ item.title }}"
+              class="grid-card-image"
+            >
 
-          <div class="grid-card-text">
-            {{ item.text|nl2br }}
-          </div>
+            <div class="grid-card-text">
+              {{ item.text|nl2br }}
+            </div>
 
-          <div class="grid-card-footer">♥ 0 likes – 0 comments</div>
-        </article>
-      {% endfor %}
+            <div class="grid-card-footer">
+              ♥ 1.2k likes – 45 comments
+            </div>
+          </article>
+        {% endfor %}
+      {% endif %}
     </div>
   </section>
 {% endblock %}

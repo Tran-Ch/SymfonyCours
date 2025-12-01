@@ -10,17 +10,44 @@ class ExperienceSpotFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // ==========================
-        // 1. Hà Giang
-        // ==========================
-        $haGiang = new ExperienceSpot();
-        $haGiang
-            ->setTitle('Hà Giang – Là où commence la route de la liberté')
-            ->setSlug('ha-giang')
-            ->setRegion('nord')
-            ->setCategory('incroyable')
-            ->setImageFilename('hagiang.jpg')
-            ->setShortDescription(<<<'TXT'
+        /*
+         * Helper nhỏ để đỡ lặp code
+         */
+        $create = function (
+            string $title,
+            string $slug,
+            string $region,
+            string $category,
+            string $imageFilename,
+            string $shortDescription
+        ) use ($manager): ExperienceSpot {
+            $spot = new ExperienceSpot();
+            $spot
+                ->setTitle($title)
+                ->setSlug($slug)
+                ->setRegion($region)
+                ->setCategory($category)
+                ->setImageFilename($imageFilename)
+                ->setShortDescription($shortDescription)
+            ;
+
+            $manager->persist($spot);
+
+            return $spot;
+        };
+
+        // ======================================================
+        //  N O R D  –  E X P É R I E N C E   I N C R O Y A B L E
+        //  (giống file fixtures cũ của bạn)
+        // ======================================================
+
+        $create(
+            'Hà Giang – Là où commence la route de la liberté',
+            'ha-giang',
+            'nord',
+            'incroyable',
+            'hagiang.jpg',
+            <<<'TXT'
 À l’extrême Nord du Vietnam, Hà Giang s’impose comme une terre de contrastes et de sensations, un lieu où la route semble se perdre dans les nuages et où chaque virage dévoile un paysage plus grandiose que le précédent. 
 Ici, les montagnes karstiques se dressent comme des cathédrales de pierre, le col de Mã Pì Lèng serpente entre des falaises vertigineuses et la rivière Nho Quế, d’un vert émeraude presque irréel, glisse doucement au fond du canyon. Ce décor spectaculaire, sculpté par le temps, offre une impression de liberté absolue, comme si l’on franchissait une frontière invisible entre le monde réel et le rêve. 
 Mais Hà Giang ne se résume pas à ses panoramas : c’est aussi une mosaïque culturelle où les ethnies H’Mông, Dao, Tày ou Lô Lô perpétuent leurs traditions à travers les costumes brodés, les marchés colorés et les fêtes ancestrales. 
@@ -28,174 +55,407 @@ Dans les villages de Đồng Văn ou de Sủng Là, les maisons en pierre et les
 Voyager à Hà Giang, c’est parcourir la mythique boucle du Nord, s’arrêter dans un marché animé, partager un thé chaud avec les habitants, admirer les fleurs de sarrasin en novembre ou goûter aux saveurs simples mais authentiques des montagnes. 
 C’est une expérience qui dépasse le tourisme, une immersion dans un univers où la beauté brute de la nature se mêle à la richesse des cultures locales. 
 Hà Giang n’est pas seulement une destination à visiter, c’est une aventure à vivre, un appel à l’essentiel, un souffle de liberté qui reste longtemps gravé dans la mémoire de ceux qui osent s’y aventurer.
-
 TXT
-            );
+        );
 
-        $manager->persist($haGiang);
-
-        // ==========================
-        // 2. Sapa
-        // ==========================
-        $sapa = new ExperienceSpot();
-        $sapa
-            ->setTitle('Sapa – Là où les nuages rencontrent les traditions')
-            ->setSlug('sapa')
-            ->setRegion('nord')
-            ->setCategory('incroyable')
-            ->setImageFilename('sapa.jpg')
-            ->setShortDescription(<<<'TXT'
+        $create(
+            'Sapa – Là où les nuages rencontrent les traditions',
+            'sapa',
+            'nord',
+            'incroyable',
+            'sapa.jpg',
+            <<<'TXT'
 Sapa, perchée dans les montagnes du Nord du Vietnam, est une destination qui fascine autant par ses paysages que par sa richesse culturelle. Dès l’aube, la ville s’éveille sous un voile de brume. Les rizières en terrasses, sculptées depuis des siècles par les H’Mông, s’étendent comme des escaliers vers le ciel. Le spectacle est hypnotisant : des courbes dorées ou vertes selon la saison, qui se perdent dans l’infini des vallées.
 Mais Sapa ne se résume pas à ses panoramas. C’est aussi un carrefour culturel où se rencontrent les ethnies H’Mông, Dao rouge, Giáy et bien d’autres. Dans les marchés hebdomadaires, les femmes portent des costumes brodés aux couleurs éclatantes, les hommes jouent du khèn ou de la flûte, et les étals regorgent de produits locaux, de plantes médicinales et d’artisanat. Chaque sourire, chaque échange est une invitation à entrer dans un monde où les traditions ne sont pas figées mais vivantes, transmises de génération en génération.
 Pour les voyageurs, l’expérience la plus marquante est sans doute la randonnée. Les sentiers serpentent entre les rizières, traversent des villages isolés et mènent vers des vallées secrètes. À chaque pas, le paysage change, révélant une cascade cachée, une maison en bois fumante de chaleur, ou un champ de maïs accroché à la montagne. Les habitants accueillent les visiteurs avec simplicité : un thé chaud, un repas partagé, une histoire racontée au coin du feu. Ces moments d’intimité donnent à Sapa une dimension humaine qui dépasse la beauté de ses panoramas.
-Et puis il y a le sommet du Fansipan, surnommé “le toit de l’Indochine”. À plus de 3 100 mètres d’altitude, il offre une vue spectaculaire sur une mer de nuages infinie. Monter là‑haut, c’est ressentir la grandeur de la nature et la petitesse de l’homme, mais aussi une liberté absolue. C’est une expérience qui reste gravée dans la mémoire.
+Et puis il y a le sommet du Fansipan, surnommé “le toit de l’Indochine”. À plus de 3 100 mètres d’altitude, il offre une vue spectaculaire sur une mer de nuages infinie. Monter là-haut, c’est ressentir la grandeur de la nature et la petitesse de l’homme, mais aussi une liberté absolue. C’est une expérience qui reste gravée dans la mémoire.
 Sapa est une destination qui fascine parce qu’elle combine tout : la majesté des paysages, la richesse des cultures, la chaleur des rencontres. C’est un lieu où l’on vient pour admirer, mais où l’on repart transformé. Chaque voyageur y trouve quelque chose de différent : une émotion, une inspiration, une envie de revenir. Sapa n’est pas seulement une étape touristique, c’est une aventure intérieure, un appel à ralentir, à contempler et à se reconnecter à l’essentiel.
-
 TXT
-            );
+        );
 
-        $manager->persist($sapa);
-
-        // ==========================
-        // 3. Mù Cang Chải
-        // ==========================
-        $muCangChai = new ExperienceSpot();
-        $muCangChai
-            ->setTitle('Mù Cang Chải – Le royaume des courbes dorées')
-            ->setSlug('mu-cang-chai')
-            ->setRegion('nord')
-            ->setCategory('incroyable')
-            ->setImageFilename('mucangchai.jpg')
-            ->setShortDescription(<<<'TXT'
-Mù Cang Chải, nichée dans la province de Yên Bái, est une terre où la beauté se mesure en courbes. Les rizières en terrasses, sculptées depuis des siècles par les H’Mông, dessinent des paysages ondulants qui changent de couleur au fil des saisons. Au printemps, elles se parent de vert tendre ; en été, elles scintillent sous l’eau des pluies ; à l’automne, elles se transforment en une mer dorée qui embrase la vallée. C’est un spectacle vivant, une œuvre d’art façonnée par la patience et le savoir‑faire des générations.
-Le col de Khau Phạ, l’un des plus impressionnants du Vietnam, offre une vue vertigineuse sur ces vallées infinies. Les photographes affluent pour capturer ce décor unique, mais au‑delà des images, c’est l’émotion qui domine. Marcher dans les sentiers de Mù Cang Chải, c’est ressentir la force de la nature et la persévérance des hommes qui l’ont apprivoisée. Les villages perchés conservent une authenticité rare : maisons en bois, fêtes locales, musiques traditionnelles. Les habitants accueillent les visiteurs avec simplicité, partageant un repas de maïs ou un verre d’alcool de riz.
+        $create(
+            'Mù Cang Chải – Le royaume des courbes dorées',
+            'mu-cang-chai',
+            'nord',
+            'incroyable',
+            'mucangchai.jpg',
+            <<<'TXT'
+Mù Cang Chải, nichée dans la province de Yên Bái, est une terre où la beauté se mesure en courbes. Les rizières en terrasses, sculptées depuis des siècles par les H’Mông, dessinent des paysages ondulants qui changent de couleur au fil des saisons. Au printemps, elles se parent de vert tendre ; en été, elles scintillent sous l’eau des pluies ; à l’automne, elles se transforment en une mer dorée qui embrase la vallée. C’est un spectacle vivant, une œuvre d’art façonnée par la patience et le savoir-faire des générations.
+Le col de Khau Phạ, l’un des plus impressionnants du Vietnam, offre une vue vertigineuse sur ces vallées infinies. Les photographes affluent pour capturer ce décor unique, mais au-delà des images, c’est l’émotion qui domine. Marcher dans les sentiers de Mù Cang Chải, c’est ressentir la force de la nature et la persévérance des hommes qui l’ont apprivoisée. Les villages perchés conservent une authenticité rare : maisons en bois, fêtes locales, musiques traditionnelles. Les habitants accueillent les visiteurs avec simplicité, partageant un repas de maïs ou un verre d’alcool de riz.
 La culture H’Mông est omniprésente : broderies colorées, marchés animés, chants et danses qui rythment la vie communautaire. Chaque rencontre est une immersion dans un monde où la tradition est vivante et fièrement préservée. Mù Cang Chải est une invitation à ralentir, à contempler et à se laisser émerveiller. C’est une expérience qui dépasse le tourisme : une immersion dans un univers où la beauté est partout, dans les paysages comme dans les sourires.
-
-
 TXT
-            );
+        );
 
-        $manager->persist($muCangChai);
-
-        // ==========================
-        // 4. Ninh Bình
-        // ==========================
-        $ninhBinh = new ExperienceSpot();
-        $ninhBinh
-            ->setTitle('Ninh Bình – Une “baie d’Halong terrestre” envoûtante')
-            ->setSlug('ninh-binh')
-            ->setRegion('nord')
-            ->setCategory('incroyable')
-            ->setImageFilename('ninhbinh.jpg')
-            ->setShortDescription(<<<'TXT'
+        $create(
+            'Ninh Bình – Une “baie d’Halong terrestre” envoûtante',
+            'ninh-binh',
+            'nord',
+            'incroyable',
+            'ninhbinh.jpg',
+            <<<'TXT'
 Ninh Bình, située au sud du delta du fleuve Rouge, est une destination qui fascine par la richesse de ses paysages et la profondeur de son histoire. Souvent surnommée la “baie d’Halong terrestre”, elle séduit les voyageurs par ses formations calcaires surgissant au milieu des rizières et des rivières, mais aussi par la chaleur de ses habitants et la richesse de sa culture. Ici, la nature et l’homme semblent dialoguer depuis des siècles, créant une harmonie rare et précieuse.
-Dès l’arrivée, le visiteur est frappé par la beauté des lieux : des falaises abruptes se dressent au‑dessus des champs verdoyants, des grottes mystérieuses s’ouvrent sur des rivières paisibles, et les barques glissent silencieusement sur l’eau. Tam Cốc et Tràng An sont les joyaux de Ninh Bình. Naviguer sur ces cours d’eau, c’est entrer dans un univers presque irréel, où chaque reflet sur l’eau raconte une histoire. Les rameuses, souvent des femmes du village, manient les avirons avec leurs pieds, une technique traditionnelle qui étonne et émerveille. Leur sourire sincère, leur hospitalité discrète, donnent à cette expérience une dimension humaine inoubliable.
-Mais Ninh Bình ne se résume pas à ses paysages. C’est aussi un haut lieu de culture et d’histoire. L’ancienne capitale Hoa Lư, fondée au Xe siècle, fut le berceau des dynasties Đinh et Lê. Les temples dédiés aux rois Đinh Tiên Hoàng et Lê Đại Hành témoignent de la grandeur passée. Leur architecture, sobre et majestueuse, reflète l’esprit du Vietnam médiéval : toits recourbés, colonnes en bois sculpté, pierres millénaires. Chaque détail raconte la puissance d’un royaume qui sut unifier le pays et résister aux invasions.
-La culture locale est profondément enracinée dans la vie quotidienne. Les habitants de Ninh Bình perpétuent des traditions agricoles séculaires. Le riz, cultivé dans les vallées fertiles, reste au cœur de l’économie et de la gastronomie. Les marchés regorgent de produits locaux : légumes frais, poissons des rivières, plats typiques comme le “cơm cháy” (riz croustillant), spécialité emblématique de la région. Partager un repas avec une famille locale, c’est découvrir une cuisine simple mais savoureuse, reflet d’une vie en harmonie avec la terre et l’eau.
-L’artisanat est également présent : broderies, objets en bambou, sculptures sur pierre. Ces savoir‑faire, transmis de génération en génération, témoignent de la créativité et de la résilience des habitants. Les fêtes traditionnelles, souvent liées aux cycles agricoles ou aux cultes des ancêtres, rythment la vie communautaire. Elles sont l’occasion de danses, de chants et de rituels qui renforcent le lien entre les générations.
-Ninh Bình est aussi un lieu de spiritualité. Les pagodes et temples disséminés dans la région offrent des espaces de recueillement. La pagode Bái Đính, l’une des plus grandes d’Asie du Sud‑Est, impressionne par ses dimensions monumentales et son atmosphère paisible. Ses statues de Bouddha, ses couloirs bordés de centaines de sculptures, invitent à la méditation et à la contemplation. L’architecture religieuse, mêlant tradition et modernité, reflète la vitalité spirituelle du Vietnam contemporain.
-Ce qui rend Ninh Bình unique, c’est la combinaison de tous ces éléments : une nature spectaculaire, une histoire prestigieuse, une culture vivante et une spiritualité profonde. Les voyageurs ne viennent pas seulement pour admirer les paysages, mais pour ressentir une atmosphère, une énergie particulière. Chaque rencontre avec les habitants, chaque visite de temple, chaque promenade en barque devient une expérience qui dépasse le simple tourisme.
-Ninh Bình est une destination qui invite à la découverte et à la réflexion. Elle rappelle que le voyage n’est pas seulement une succession de lieux à visiter, mais une immersion dans un univers où la beauté et l’humanité se rencontrent. Ici, le temps semble ralentir, laissant place à la contemplation et à l’émerveillement.
-
+Tam Cốc et Tràng An sont les joyaux de Ninh Bình. Naviguer sur ces cours d’eau, c’est entrer dans un univers presque irréel, où chaque reflet sur l’eau raconte une histoire. Les rameuses, souvent des femmes du village, manient les avirons avec leurs pieds, une technique traditionnelle qui étonne et émerveille.
 TXT
-            );
+        );
 
-        $manager->persist($ninhBinh);
+        $create(
+            'Baie d’Halong – Une merveille naturelle classée à l’UNESCO',
+            'baie-dhalong',
+            'nord',
+            'incroyable',
+            'halong.jpg',
+            <<<'TXT'
+Hạ Long, située dans la province de Quảng Ninh, est mondialement connue pour sa baie classée au patrimoine mondial de l’UNESCO. Des milliers d’îlots calcaires surgissent des flots turquoise, créant un décor irréel. Au-delà du paysage, ce sont les villages flottants, la vie des pêcheurs et les pagodes accrochées à la roche qui donnent à la baie son âme profonde.
+TXT
+        );
+
+        $create(
+            'Mai Châu – La vallée de la sérénité',
+            'mai-chau',
+            'nord',
+            'incroyable',
+            'maichau.jpg',
+            <<<'TXT'
+Mai Châu, nichée au cœur des montagnes, est une vallée paisible habitée principalement par les Thaï blancs. Les maisons sur pilotis, les rizières verdoyantes et les soirées de danse autour du feu créent une atmosphère chaleureuse et authentique. C’est un lieu idéal pour se ressourcer et partager le quotidien des habitants.
+TXT
+        );
+
+        $create(
+            'Ba Bể – Un lac mythique au cœur de la forêt',
+            'ba-be',
+            'nord',
+            'incroyable',
+            'babe.jpg',
+            <<<'TXT'
+Au cœur des montagnes du Nord du Vietnam, le lac Ba Bể s’étend comme un miroir d’eau paisible entouré de forêts primaires. Classé parc national, ce site est l’un des plus grands lacs naturels du pays et fascine autant par sa beauté que par la richesse culturelle des communautés Tày qui y vivent.
+TXT
+        );
+
+        $create(
+            'Cao Bằng – Terre de cascades et de légendes',
+            'cao-bang',
+            'nord',
+            'incroyable',
+            'caobang.jpg',
+            <<<'TXT'
+Cao Bằng, région montagneuse à l’extrême nord, est célèbre pour la cascade de Bản Giốc et ses vallées verdoyantes. Entre villages Tày et Nùng, traditions artisanales et marchés colorés, la province offre une immersion authentique dans un Vietnam encore peu connu des voyageurs.
+TXT
+        );
+
+        // ======================================================
+        //  N O R D  –  C U L T U R E
+        //  (dựa trên nội dung fallback trong culture.html.twig)
+        // ======================================================
+
+        $create(
+            'Marché de Bac Hà – La palette colorée des minorités',
+            'marche-bac-ha-couleurs',
+            'nord',
+            'culture',
+            'bac-ha-market.jpg',
+            <<<'TXT'
+Chaque dimanche, le marché de Bac Hà s'anime d'une effervescence unique. 
+Les femmes H'mong, Dao, Tày et Nùng viennent y vendre leurs produits dans une explosion de couleurs. 
+C'est bien plus qu'un lieu d'échange : c'est une véritable scène sociale où se mêlent rires, négociations et retrouvailles. 
+Ici, l'artisanat traditionnel côtoie les saveurs locales, offrant un spectacle vivant de la culture montagnarde.
+TXT
+        );
+
+        $create(
+            'Sapa – Les rizières en terrasses des H’mong',
+            'sapa-culture-terrasses',
+            'nord',
+            'culture',
+            'sapa-culture.jpg',
+            <<<'TXT'
+À Sapa, les rizières en terrasses épousent les montagnes comme une œuvre d'art vivante. 
+Les H'mong, vêtus de leurs habits traditionnels bleu indigo, perpétuent des méthodes de culture ancestrales. 
+Le marché de l'amour, les danses au son du khèn et l'artisanat du chanvre racontent une culture profondément liée à la terre.
+TXT
+        );
+
+        $create(
+            'Hà Giang – Le royaume des H’mong fleuris',
+            'ha-giang-culture-hmong-fleuris',
+            'nord',
+            'culture',
+            'hagiang-culture.jpg',
+            <<<'TXT'
+Dans les montagnes escarpées de Hà Giang, les H'mong fleuris cultivent leur identité à travers des vêtements brodés de motifs complexes. 
+Le marché de l'amour de Khâu Vai, où se retrouvent les amoureux une fois par an, est l'un des rituels les plus émouvants de la région. 
+Les maisons en terre des villages isolés racontent une histoire de résilience et d'harmonie avec la nature.
+TXT
+        );
+
+        $create(
+            'Mai Châu – La douceur de vivre des Thaï blancs',
+            'mai-chau-culture-thai-blancs',
+            'nord',
+            'culture',
+            'maichau-culture.jpg',
+            <<<'TXT'
+Mai Châu dévoile la culture raffinée des Thaï blancs. 
+Les femmes tissent la soie sur d'anciens métiers en bois, créant des étoffes aux motifs géométriques élégants. 
+Le xòe, danse traditionnelle au rythme lent, et les maisons sur pilotis entourées de rizières créent une atmosphère paisible.
+TXT
+        );
+
+        $create(
+            'Mù Cang Chải – Le ballet des rizières en terrasses',
+            'mu-cang-chai-culture-ballet',
+            'nord',
+            'culture',
+            'mucangchai-culture.jpg',
+            <<<'TXT'
+Classées au patrimoine national, les rizières en terrasses de Mù Cang Chải sont le fruit d'un savoir-faire séculaire. 
+Les H'mong y pratiquent une agriculture en parfaite symbiose avec la montagne. 
+Les fêtes du riz, où l'on célèbre les récoltes, sont l'occasion de déguster le rượu cần et d'admirer les danses au son des khèn.
+TXT
+        );
+
+        $create(
+            'Ninh Bình – Le berceau de la culture vietnamienne',
+            'ninh-binh-culture-berceau',
+            'nord',
+            'culture',
+            'ninhbinh-culture.jpg',
+            <<<'TXT'
+Ninh Bình est un véritable musée à ciel ouvert de la culture vietnamienne. 
+L'ancienne capitale Hoa Lư abrite des temples dédiés aux rois Dinh et Lê, témoins de l'indépendance du pays. 
+Les spectacles de chant xẩm résonnent dans les grottes tandis que les artisans perpétuent la broderie de Kim Sơn.
+TXT
+        );
+
+        $create(
+            'Lào Cai – La diversité ethnique à ciel ouvert',
+            'lao-cai-diversite-ethnique',
+            'nord',
+            'culture',
+            'laocai-culture.jpg',
+            <<<'TXT'
+La province de Lào Cai est un kaléidoscope de cultures avec plus de 20 groupes ethniques. 
+Les marchés ethniques comme Cốc Ly ou Cán Cấu offrent un spectacle haut en couleur, où se mêlent les langues, les costumes et les saveurs. 
+Les fêtes traditionnelles, comme la danse du feu des Dao, plongent les visiteurs dans un univers mystique et authentique.
+TXT
+        );
+
+        $create(
+            'Yên Bái – L\'héritage des Tày et des Dao',
+            'yen-bai-heritage-tay-dao',
+            'nord',
+            'culture',
+            'yenbai-culture.jpg',
+            <<<'TXT'
+Yên Bái révèle la richesse culturelle des Tày et des Dao à travers leurs villages traditionnels. 
+Les maisons sur pilotis des Tày s'ouvrent sur des paysages de théiers centenaires, tandis que les femmes Dao rouges pratiquent encore la cueillette des herbes médicinales. 
+Les cérémonies et les marchés de montagne offrent un aperçu fascinant de traditions séculaires.
+TXT
+        );
+
+        // ======================================================
+        //  N O R D  –  T O U R I S M E   D E   V A C A N C E S
+        //  (dựa trên fallback trong tourisme.html.twig)
+        // ======================================================
+
+        $create(
+            'Sapa – Séjour de luxe au-dessus d’une mer de nuages',
+            'sapa-tourisme-luxe-nuages',
+            'nord',
+            'tourisme',
+            'sapa-tourisme.jpg',
+            <<<'TXT'
+Sapa est l’icône du bien-être en montagne. 
+Les resorts perchés sur les pentes offrent des piscines à débordement avec vue panoramique sur la vallée de Mường Hoa. 
+Le matin, savourez une tasse de thé chaud dans la brume légère ; le soir, laissez-vous envelopper par un spa aux herbes traditionnelles.
+TXT
+        );
+
+        $create(
+            'Baie d’Halong – Détente en bord de mer au cœur d’un site classé UNESCO',
+            'halong-tourisme-detente-mer',
+            'nord',
+            'tourisme',
+            'halong-tourisme.jpg',
+            <<<'TXT'
+La baie d’Halong ne se limite pas aux croisières : elle abrite de nombreux resorts haut de gamme en bord de mer. 
+Profitez d’une plage privée, admirez le coucher du soleil sur les formations karstiques ou offrez-vous un soin spa marin.
+TXT
+        );
+
+        $create(
+            'Sources thermales de Kim Bôi – Bien-être & thérapie naturelle',
+            'kim-boi-sources-thermales',
+            'nord',
+            'tourisme',
+            'kimboi.jpg',
+            <<<'TXT'
+Kim Bôi est la destination idéale pour combiner détente et soins du corps. 
+Ses sources chaudes naturelles, ses bains de boue et son environnement verdoyant créent une expérience de relaxation totale.
+TXT
+        );
+
+        $create(
+            'Đồng Văn – Lũng Cú : l’art du “mountain retreat”',
+            'dong-van-lung-cu-retreat',
+            'nord',
+            'tourisme',
+            'dongvan-retreat.jpg',
+            <<<'TXT'
+Parfait pour les voyageurs en quête de détente avec une touche d’aventure. 
+Les lodges et homestays se fondent dans le paysage rocheux, offrant des vues spectaculaires sur les vallées et les montagnes du plateau karstique de Đồng Văn.
+TXT
+        );
+
+        $create(
+            'Yên Tử – Méditation, sérénité et retraite spirituelle',
+            'yen-tu-meditation-serenite',
+            'nord',
+            'tourisme',
+            'yentu.jpg',
+            <<<'TXT'
+Yên Tử n’est pas seulement un site spirituel : c’est aussi une destination idéale pour un séjour zen & wellness. 
+Les resorts inspirés de l’architecture des pagodes créent une atmosphère paisible, propice à la méditation et au ressourcement.
+TXT
+        );
+
+        $create(
+            'Lac de Hòa Bình – Détente au bord d’un lac majestueux',
+            'lac-hoa-binh-detente',
+            'nord',
+            'tourisme',
+            'hoabinh-lake.jpg',
+            <<<'TXT'
+Le lac de Hòa Bình séduit par son eau turquoise, ses montagnes environnantes et son air pur. 
+Les resorts situés au bord du lac proposent piscines à débordement, kayak, balades en bateau et espaces de relaxation.
+TXT
+        );
+
+        $create(
+            'Cát Bà – Entre mer, forêt et resorts de charme',
+            'cat-ba-mer-foret-resorts',
+            'nord',
+            'tourisme',
+            'catba.jpg',
+            <<<'TXT'
+Cát Bà offre une combinaison rare entre plages, falaises et parc national. 
+Les resorts sur la baie de Lan Hạ bénéficient de vues imprenables sur la mer, parfaits pour un séjour luxueux mais paisible.
+TXT
+        );
+
+        $create(
+            'Sources thermales de Thanh Thủy (Phú Thọ)',
+            'thanh-thuy-sources-thermales',
+            'nord',
+            'tourisme',
+            'thanhthuy.jpg',
+            <<<'TXT'
+L’une des rares sources chaudes naturelles du Nord. 
+Plongez dans une eau minérale bienfaisante au milieu des montagnes, profitez de soins spa et d’un environnement parfaitement calme.
+TXT
+        );
 
         // ==========================
-        // 5. Baie d’Halong
+        // 9. (CENTRE / INCROYABLE)
+        // Hué  
         // ==========================
-        $halong = new ExperienceSpot();
-        $halong
-            ->setTitle('Baie d’Halong – Une merveille naturelle classée à l’UNESCO')
-            ->setSlug('baie-dhalong')
-            ->setRegion('nord')
+        $hueIncroyable = (new ExperienceSpot())
+            ->setTitle('Huế – L’ancienne cité impériale au bord de la rivière des Parfums')
+            ->setSlug('hue-cite-imperiale')
+            ->setRegion('centre')
             ->setCategory('incroyable')
-            ->setImageFilename('halong.jpg')
+            ->setImageFilename('hue-incroyable.jpg')
             ->setShortDescription(<<<'TXT'
-Hạ Long, située dans la province de Quảng Ninh, est mondialement connue pour sa baie classée au patrimoine mondial de l’UNESCO. Des milliers d’îlots calcaires surgissent des flots turquoise, créant un décor irréel qui semble tout droit sorti d’une peinture traditionnelle. Mais réduire Hạ Long à ses paysages serait oublier l’essentiel : la vie qui s’y déploie, les habitants qui façonnent son identité, la culture qui s’exprime dans chaque geste et l’architecture qui témoigne de son histoire.
-La baie est avant tout un espace habité. Depuis des générations, des familles vivent dans des villages flottants, construits directement sur l’eau. Leurs maisons en bois colorées, reliées par des passerelles, forment de petites communautés où la mer est à la fois nourricière et protectrice. Les habitants pratiquent la pêche, l’élevage de poissons et de coquillages, et accueillent les voyageurs avec simplicité. Découvrir ces villages, c’est entrer dans un monde où le quotidien est rythmé par les marées et où chaque sourire reflète une relation intime avec la mer.
-La culture de Hạ Long est profondément liée à cet environnement maritime. Les fêtes locales célèbrent la mer et ses bienfaits. La fête de la pêche, par exemple, est l’occasion de rituels, de chants et de danses qui expriment la gratitude envers les divinités marines. Les habitants perpétuent des traditions culinaires uniques : poissons grillés, fruits de mer frais, plats préparés avec des algues ou des coquillages. La gastronomie est simple mais savoureuse, reflet d’une vie en harmonie avec la nature.
-L’architecture de Hạ Long est marquée par cette dualité entre terre et mer. Dans la ville moderne, les hôtels et bâtiments contemporains témoignent du dynamisme économique et touristique. Mais dans les villages traditionnels, les maisons flottantes ou les petites pagodes construites au bord de l’eau racontent une autre histoire : celle d’une adaptation ingénieuse à un environnement exigeant. Les pagodes, souvent nichées dans des grottes ou sur des îlots, ajoutent une dimension spirituelle au paysage. Elles sont des lieux de recueillement où les habitants viennent prier pour la prospérité et la protection.
-Au‑delà de la baie, la ville de Hạ Long elle‑même est en pleine transformation. Les marchés animés regorgent de produits locaux : poissons séchés, fruits tropicaux, artisanat en coquillage ou en pierre. Les habitants y échangent non seulement des biens mais aussi des histoires, des traditions, des sourires. La ville est un carrefour où se rencontrent modernité et authenticité. Les jeunes générations, ouvertes au monde, perpétuent les traditions tout en les adaptant à la vie contemporaine.
-Ce qui rend Hạ Long fascinante, c’est cette combinaison de beauté naturelle et de richesse humaine. Les paysages hypnotisent, mais ce sont les rencontres qui marquent. Partager un repas dans un village flottant, écouter un pêcheur raconter la légende des dragons qui auraient façonné la baie, visiter une pagode nichée dans une grotte, flâner dans un marché animé : autant d’expériences qui donnent à Hạ Long une profondeur que les images seules ne peuvent transmettre.
-Hạ Long est une destination qui invite à la contemplation et à la découverte. Elle rappelle que la beauté d’un lieu ne réside pas seulement dans ses panoramas, mais aussi dans la vie qui s’y déploie, dans la culture qui s’y exprime et dans l’architecture qui en témoigne. Voyager à Hạ Long, c’est entrer dans un univers où la mer et l’homme cohabitent depuis des siècles, où la nature et la culture se mêlent pour offrir une expérience unique.
-
-TXT
-            );
-
-        $manager->persist($halong);
+        Huế, ancienne capitale impériale, est un voyage dans le temps...
+        (đoạn mô tả dài tuỳ bạn)
+        TXT);
+        $manager->persist($hueIncroyable);
 
         // ==========================
-        // 6. Mai Châu
+        // 10. (CENTRE / CULTURE)
+        // Hội An
         // ==========================
-        $maiChau = new ExperienceSpot();
-        $maiChau
-            ->setTitle('Mai Châu – La vallée de la sérénité')
-            ->setSlug('mai-chau')
-            ->setRegion('nord')
-            ->setCategory('incroyable')
-            ->setImageFilename('maichau.jpg')
+        $hoiAnCulture = (new ExperienceSpot())
+            ->setTitle('Hội An – La lanterne de la culture au bord de la rivière Thu Bồn')
+            ->setSlug('hoi-an-culture')
+            ->setRegion('centre')
+            ->setCategory('culture')
+            ->setImageFilename('hoian-culture.jpg')
             ->setShortDescription(<<<'TXT'
-Mai Châu, nichée au cœur des montagnes du Nord du Vietnam, est une vallée qui séduit par sa douceur et son authenticité. Contrairement aux destinations plus connues et fréquentées, elle offre une atmosphère paisible où le temps semble ralentir. Ici, la beauté ne réside pas seulement dans les paysages verdoyants, mais aussi dans la vie quotidienne des habitants, dans leurs traditions et dans l’architecture qui reflète une harmonie rare entre l’homme et la nature.
-Les habitants de Mai Châu sont principalement issus de l’ethnie des Thaï blancs. Leur culture est profondément enracinée dans la vallée et se manifeste à travers les costumes traditionnels, les danses et les chants qui rythment les fêtes communautaires. Les femmes portent souvent des jupes longues et des chemises brodées, tandis que les hommes participent aux rituels et aux célébrations avec des instruments de musique traditionnels. Les soirées dans les villages sont animées par des spectacles de danse autour du feu, où les voyageurs sont invités à partager un verre d’alcool de riz et à entrer dans la ronde. Ces moments de convivialité créent un lien fort entre visiteurs et habitants, révélant une hospitalité sincère et chaleureuse.
-L’architecture de Mai Châu est un autre élément fascinant. Les maisons sur pilotis, construites en bois et en bambou, dominent le paysage. Elles sont conçues pour s’adapter au climat et aux conditions de la vallée : surélevées pour éviter l’humidité, aérées pour laisser circuler le vent, et ouvertes sur les champs environnants. Ces habitations reflètent une philosophie de vie simple mais ingénieuse, où chaque détail est pensé pour respecter la nature et favoriser la communauté. Les villages, alignés le long des rizières, offrent une image harmonieuse et apaisante.
-La vie quotidienne est intimement liée à l’agriculture. Les habitants cultivent le riz, le maïs et élèvent des animaux domestiques. Les marchés locaux regorgent de produits frais et d’artisanat : tissages colorés, broderies fines, objets en bambou. Ces savoir‑faire traditionnels sont transmis de génération en génération et témoignent de la créativité et de la résilience des communautés.
-Pour les voyageurs, Mai Châu est une invitation à ralentir et à se reconnecter à l’essentiel. Se promener à vélo dans la vallée, respirer l’air pur, écouter le chant des oiseaux et admirer les rizières en terrasses est une expérience qui apaise l’esprit. Ici, la simplicité devient luxe, et la sérénité se transforme en véritable richesse.
-Mai Châu n’est pas seulement une destination touristique : c’est une immersion dans un univers où la culture, l’architecture et la nature se mêlent pour offrir une expérience profondément humaine.
-
-TXT
-            );
-
-        $manager->persist($maiChau);
+        Hội An séduit par ses maisons jaunes, ses lanternes colorées...
+        TXT);
+        $manager->persist($hoiAnCulture);
 
         // ==========================
-        // 7. Ba Bể
+        // 11. (CENTRE / TOURISME)
+        // Da Nang
         // ==========================
-        $baBe = new ExperienceSpot();
-        $baBe
-            ->setTitle('Ba Bể – Un lac mythique au cœur de la forêt')
-            ->setSlug('ba-be')
-            ->setRegion('nord')
-            ->setCategory('incroyable')
-            ->setImageFilename('babe.jpg')
+        $daNangTourisme = (new ExperienceSpot())
+            ->setTitle('Đà Nẵng – Séjour balnéaire entre mer et montagnes')
+            ->setSlug('da-nang-sejour-balneaire')
+            ->setRegion('centre')
+            ->setCategory('tourisme')
+            ->setImageFilename('danang-tourisme.jpg')
             ->setShortDescription(<<<'TXT'
-Au cœur des montagnes du Nord du Vietnam, le lac Ba Bể s’étend comme un miroir d’eau paisible entouré de forêts primaires. Classé parc national, ce site est l’un des plus grands lacs naturels du pays et fascine autant par sa beauté que par la richesse culturelle des communautés qui y vivent. Ici, la nature et l’homme semblent dialoguer depuis des siècles, créant une atmosphère mystique et profondément humaine.
-Les habitants de Ba Bể appartiennent principalement à l’ethnie Tày. Leur mode de vie est intimement lié au lac et à la forêt. Les maisons traditionnelles sur pilotis, construites en bois et en bambou, dominent les villages. Elles sont conçues pour résister à l’humidité et s’adapter au climat montagnard. L’architecture reflète une philosophie de vie simple mais ingénieuse : ouverte sur l’extérieur, elle favorise la convivialité et l’harmonie avec la nature. Les villages, alignés le long des rives, offrent une image authentique et apaisante.
-La culture Tày est vivante et fièrement préservée. Les habitants perpétuent des traditions ancestrales à travers la musique, les chants et les danses. Le “then”, chant rituel accompagné d’un luth à deux cordes, est une pratique spirituelle qui relie les hommes aux divinités et aux ancêtres. Les fêtes locales, souvent liées aux cycles agricoles ou aux légendes du lac, rassemblent les communautés dans une atmosphère joyeuse et colorée. Les costumes traditionnels, sobres mais élégants, témoignent d’une identité culturelle forte.
-La gastronomie locale reflète cette proximité avec la nature. Les habitants préparent des plats simples mais savoureux à base de poissons du lac, de légumes cultivés dans les vallées et de riz gluant. Partager un repas dans une maison sur pilotis est une expérience qui dépasse la simple dégustation : c’est un moment de convivialité où l’on découvre la générosité et l’hospitalité des familles.
-Le lac Ba Bể est aussi entouré de légendes. On raconte qu’il serait né d’un cataclysme ancien, et que ses eaux abritent des esprits protecteurs. Ces récits, transmis de génération en génération, ajoutent une dimension mystique au paysage. Explorer Ba Bể, c’est naviguer sur ses eaux calmes, découvrir des grottes cachées, admirer des cascades secrètes et écouter les histoires des anciens.
-Pour les voyageurs, Ba Bể est une immersion dans un univers intemporel. C’est un lieu où la beauté naturelle se mêle à la richesse culturelle, où chaque rencontre devient une expérience unique. Ici, la simplicité devient luxe, et la sérénité se transforme en véritable richesse. Ba Bể n’est pas seulement un site naturel : c’est une terre de légendes et de traditions, une invitation à ralentir et à contempler.
-
-TXT
-            );
-
-        $manager->persist($baBe);
+        Avec ses longues plages de sable fin, ses resorts modernes...
+        TXT);
+        $manager->persist($daNangTourisme);
 
         // ==========================
-        // 8. Cao Bằng
+        // 12. (SUD / INCROYABLE)
+        // Cần Thơ
         // ==========================
-        $caoBang = new ExperienceSpot();
-        $caoBang
-            ->setTitle('Cao Bằng – Terre de cascades et de légendes')
-            ->setSlug('cao-bang')
-            ->setRegion('nord')
-            ->setCategory('incroyable')
-            ->setImageFilename('caobang.jpg')
-            ->setShortDescription(<<<'TXT'
-Cao Bằng, située à l’extrême nord du Vietnam, est une région montagneuse qui séduit par la puissance de sa nature et la richesse de sa culture. Loin des circuits touristiques classiques, elle offre une immersion authentique dans un univers où les paysages grandioses se mêlent à des traditions vivantes. La cascade de Bản Giốc, l’une des plus belles d’Asie, est le symbole de cette terre. Ses eaux blanches se déversent avec force au milieu des montagnes verdoyantes, créant un spectacle majestueux qui attire autant les voyageurs que les habitants, fiers de ce patrimoine naturel.
-Les populations locales appartiennent principalement aux ethnies Tày et Nùng. Leur mode de vie est profondément enraciné dans la vallée. Les villages conservent une architecture traditionnelle avec des maisons en torchis ou en bois, souvent couvertes de toits de chaume. Ces habitations, simples mais ingénieuses, sont conçues pour résister aux conditions climatiques et s’intégrer harmonieusement dans le paysage. Les maisons sur pilotis, typiques des Tày, favorisent la convivialité et reflètent une philosophie de vie tournée vers la communauté.
-La culture de Cao Bằng est riche et colorée. Les fêtes locales rythment l’année et sont l’occasion de danses, de chants et de rituels qui renforcent le lien entre les générations. Les costumes traditionnels, brodés de motifs géométriques ou floraux, témoignent d’un savoir‑faire transmis de génération en génération. La musique occupe une place importante : les instruments traditionnels accompagnent les cérémonies et les célébrations, créant une atmosphère vibrante et joyeuse.
-L’artisanat est également un élément essentiel de la culture locale. Les habitants fabriquent des objets en bambou, des broderies et des bijoux en argent. Ces créations, à la fois utilitaires et artistiques, reflètent la créativité et la résilience des communautés. Les marchés de Cao Bằng sont des lieux de rencontre où l’on échange non seulement des produits mais aussi des histoires et des sourires.
-La gastronomie locale est simple mais savoureuse. Les plats à base de maïs, de riz gluant et de légumes de montagne sont au cœur de l’alimentation. L’alcool de riz, préparé selon des méthodes traditionnelles, accompagne les repas et les fêtes. Partager un repas avec une famille locale, c’est découvrir une hospitalité sincère et chaleureuse.
-Cao Bằng est une destination qui invite à la contemplation et à la découverte. Elle rappelle que le voyage n’est pas seulement une succession de paysages, mais une immersion dans un univers où la nature et la culture se mêlent pour offrir une expérience profondément humaine. Ici, chaque vallée, chaque maison, chaque sourire raconte une histoire.
+        $create(
+            'Cần Thơ – Cœur du delta du Mékong',
+            'can-tho-mekong',
+            'sud',
+            'incroyable',
+            'cantho.jpg',
+            <<<'TXT'
+        Cần Thơ est la grande ville du delta du Mékong, célèbre pour ses marchés flottants,
+        ses vergers luxuriants et son ambiance chaleureuse au bord du fleuve.
+        TXT
+        );
 
-TXT
-            );
+        // ==========================
+        // 13. (SUD / CULTURE)
+        // HCMC
+        // ==========================
+        $create(
+            'Hô Chi Minh-Ville – Métropole vibrante du Sud',
+            'ho-chi-minh-ville-urbaine',
+            'sud',
+            'culture',
+            'hcmc.jpg',
+            <<<'TXT'
+        Plus grande ville du pays, mêlant patrimoine colonial, quartiers traditionnels
+        et vie nocturne animée.
+        TXT
+        );
 
-        $manager->persist($caoBang);
+        // ==========================
+        // 14. (SUD / TOURISME)
+        // Phú Quốc
+        // ==========================
+        $create(
+            'Phú Quốc – Séjour balnéaire entre plages et forêts',
+            'phu-quoc-sejour-balneaire',
+            'sud',
+            'tourisme',
+            'phuquoc.jpg',
+            <<<'TXT'
+        Île paradisiaque au large du Sud, idéale pour le farniente, la plongée
+        et les resorts en bord de mer.
+        TXT
+        );
 
-        // Lưu tất cả vào DB
+        // ======================================================
+        //  TODO: CENTRE / SUD
+        //  Khi cần, bạn tạo thêm các spot:
+        //      region = 'centre' / 'sud'
+        //      category = 'incroyable' | 'culture' | 'tourisme'
+        //  Cấu trúc y hệt như trên.
+        // ======================================================
+
         $manager->flush();
     }
 }

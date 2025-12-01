@@ -64,8 +64,9 @@
         gap: 10px;
     }
 
+    /* NÚT CHÍNH CỦA NORD – GIỮ CÙNG MÀU VỚI CENTRE & SUD */
     .nord-main-btn {
-        background-color: rgba(216, 228, 159, 1);
+        background-color: rgba(216, 228, 159, 1);  /* màu xanh nhạt */
         border-radius: 12px;
         padding: 10px 18px;
         text-align: center;
@@ -84,14 +85,14 @@
     /* đoạn giới thiệu ngắn (đoạn số 1) */
     .nord-intro {
         font-size: 14px;
-        color: #dbe8d2;      /* màu nhạt hơn, bạn có thể đổi */
+        color: #dbe8d2;
         line-height: 1.6;
     }
 
     /* đoạn mô tả dài (đoạn số 2) */
     .nord-description {
         font-size: 16px;
-        color: #6d8778;      /* màu sáng hơn */
+        color: #6d8778;
         line-height: 1.6;
     }
 
@@ -174,59 +175,52 @@
 
     /* card thông tin tỉnh thành – nằm NGAY dưới map và ở giữa (layout màn lớn) */
     .city-info-wrapper {
-        width: 1000px;        /* cùng chiều rộng với .container */
+        width: 1000px;
         max-width: 95%;
-        margin-left: -250px;   /* cùng offset với .container để card nằm dưới map */
-        margin-top: 120px;     /* tăng/giảm để card thấp xuống đúng mức bạn muốn */
-        display: flex;         /* dùng flex để canh giữa card  */
-        justify-content: center;  /* card nằm giữa theo trục ngang */
+        margin-left: -250px;
+        margin-top: 120px;
+        display: flex;
+        justify-content: center;
     }
 
-    /* Khung card tổng thể */
     #city-info.card {
-        max-width: 380px;         /* kích thước card giống hình cũ */
-        width: 100%;              /* cho phép co giãn nhỏ hơn 380px trên mobile */
+        max-width: 380px;
+        width: 100%;
         border-radius: 8px;
-        overflow: hidden;         /* bo tròn cả header + thân */
+        overflow: hidden;
         box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         border: none;
     }
 
-    /* Header màu xanh đậm, chữ trắng, căn trái */
     #city-info .card-header {
-      background-color: #406459 !important; /* giống màu bạn đang dùng */
+      background-color: #406459 !important;
       color: #ffffff;
       font-weight: 600;
       font-size: 16px;
       padding: 8px 16px;
     }
 
-    /* Phần body trắng */
     #city-info .card-body {
       background-color: #ffffff;
       padding: 12px 20px;
     }
 
-    /* Các dòng thông tin bên trong */
     #city-info .list-group-item {
       border-left: 0;
       border-right: 0;
-      border-color: #e0e0e0;        /* màu đường kẻ mảnh giữa các dòng */
+      border-color: #e0e0e0;
       font-size: 14px;
       padding: 8px 0;
     }
 
-    /* bỏ đường kẻ trên cùng để giống hình */
     #city-info .list-group-item:first-child {
       border-top: 0;
     }
 
-    /* tiêu đề từng dòng (Superficie, Population, Description…) */
     #city-info .list-group-item strong {
       font-weight: 600;
     }
 
-    /* đoạn mô tả dài */
     #city-info .city-desc {
       margin-top: 4px;
       line-height: 1.5;
@@ -238,15 +232,14 @@
 
     /* ===== RESPONSIVE ===== */
 
-    /* Màn từ 1200–1440px (14" thường nằm ở đây): giảm nhẹ scale map */
     @media (max-width: 1440px) {
       .nord-wrapper {
         max-width: 1100px;
       }
 
       .map-container svg {
-        transform: scale(2.1);   /* nhỏ hơn 2.5 để bớt tràn */
-        margin-left: -450px;     /* chỉnh lại cho map nằm đúng vị trí */
+        transform: scale(2.1);
+        margin-left: -450px;
       }
 
       .city-info-wrapper {
@@ -255,7 +248,6 @@
       }
     }
 
-    /* Tablet/laptop vừa (≤ 1200px): giảm nhẹ gap, vẫn giữ layout 2 cột */
     @media (max-width: 1200px) {
       .nord-wrapper {
         grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
@@ -268,10 +260,9 @@
       }
     }
 
-    /* Tablet dọc / màn nhỏ hơn (≤ 992px): map + card xếp dọc, ôm trong màn hình */
     @media (max-width: 992px) {
       .nord-wrapper {
-        grid-template-columns: 1fr;   /* map trên, text dưới */
+        grid-template-columns: 1fr;
         gap: 24px;
       }
 
@@ -282,23 +273,22 @@
       .map-section {
         justify-content: center;
         align-items: center;
-        flex-direction: column;  /* map trên, card dưới */
+        flex-direction: column;
       }
 
       .map-container {
         width: 100%;
         display: flex;
-        justify-content: center; /* luôn căn giữa map */
+        justify-content: center;
       }
 
       .map-container svg {
         width: 100%;
         height: auto;
-        transform: scale(1.5);            /* map to hơn */
-        transform-origin: center top;     /* tâm nằm giữa để không bị lệch */
-        
-        margin-left: 0 !important;        /* xoá đẩy lệch trái */
-        max-width: 330px;                 /* giới hạn để không tràn */
+        transform: scale(1.5);
+        transform-origin: center top;
+        margin-left: 0 !important;
+        max-width: 330px;
       }
 
       .city-info-wrapper {
@@ -308,7 +298,6 @@
       }
     }
 
-    /* Điện thoại (≤ 768px): thu nhỏ thêm nhưng giữ khoảng cách & vị trí */
     @media (max-width: 768px) {
       main {
         margin-top: 120px;
@@ -330,9 +319,8 @@
         width: 100%;
         transform: scale(1.4);
         transform-origin: center top;
-
-        margin-left: 0 !important; /* luôn giữa */
-        max-width: 280px;          /* phù hợp màn nhỏ */
+        margin-left: 0 !important;
+        max-width: 280px;
       }
 
       .city-info-wrapper {
@@ -341,7 +329,6 @@
       }
     }
 
-    /* Màn rất nhỏ (≤ 576px): co thêm 1 chút */
     @media (max-width: 576px) {
       main {
         margin-top: 110px;
@@ -370,7 +357,7 @@
         <div class="map-container">
           <div id="tooltip"></div>
 
-          {# ======= BẢN ĐỒ SVG NORD – GIỮ NGUYÊN TOÀN BỘ SVG CỦA BẠN ======= #}
+          {# ======= BẢN ĐỒ SVG NORD – GIỮ NGUYÊN SVG CỦA BẠN ======= #}
           <svg xmlns="http://www.w3.org/2000/svg" width="330" height="330" viewBox="0 0 330 330" fill="none">
             <!-- Hà Nội -->
             <g id="vn_ha_noi" class="province" data-name="Hà Nội">
@@ -584,17 +571,18 @@
         <h1>EXPÉRIENCE DU NORD</h1>
 
         <div class="nord-btn-box">
+            {# ĐỔI CLASS → nord-main-btn ĐỂ ĂN STYLE MÀU #}
             <button class="nord-main-btn"
-                    onclick="window.location.href='{{ path('app_nord_incroyable') }}'">
-            EXPÉRIENCE INCROYABLE
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'nord', category: 'incroyable'}) }}'">
+              EXPÉRIENCE INCROYABLE
             </button>
             <button class="nord-main-btn"
-                    onclick="window.location.href='{{ path('app_nord_culture') }}'">
-            DÉCOUVREZ LA CULTURE
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'nord', category: 'culture'}) }}'">
+              DÉCOUVREZ LA CULTURE
             </button>
             <button class="nord-main-btn"
-                    onclick="window.location.href='{{ path('app_nord_tourisme') }}'">
-            TOURISME DE VACANCES
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'nord', category: 'tourisme'}) }}'">
+              TOURISME DE VACANCES
             </button>
         </div>
 
@@ -720,9 +708,7 @@
       const popEl  = card.querySelector('.city-population');
       const descEl = card.querySelector('.city-desc');
 
-      // Hover + click trên các tỉnh
       document.querySelectorAll('.province').forEach(province => {
-        // Hover: tooltip
         province.addEventListener('mousemove', e => {
           const name = province.dataset.name || province.id;
           tooltip.textContent = name;
@@ -735,7 +721,6 @@
           tooltip.style.opacity = 0;
         });
 
-        // Click: hiện card thông tin
         province.addEventListener('click', () => {
           const data = provinceData[province.id];
           if (!data) return;
@@ -748,7 +733,6 @@
         });
       });
 
-      // ===== CLICK RA NGOÀI MAP / NGOÀI CARD THÌ ẨN CARD =====
       document.addEventListener('click', (e) => {
         if (e.target.closest('#city-info') || e.target.closest('.province')) {
           return;

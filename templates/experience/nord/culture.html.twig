@@ -114,97 +114,128 @@
       <a href="{{ path('app_nord') }}" class="btn btn-long">← Retour à la carte du Nord</a>
     </div>
 
-    {# Nội dung mô tả thêm dưới tiêu đề #}
     <p class="grid-page-intro">
-      Un voyage à la rencontre des sons, des traditions et de l’âme du Nord.
-      <br>
-      Le Nord du Vietnam n’est pas seulement une terre de montagnes majestueuses et de rizières en terrasses. C’est surtout un monde où la culture se vit au quotidien : dans les mélodies des instruments traditionnels, les fêtes ancestrales, les coutumes séculaires et l’architecture unique des villages ethniques.
-      Voici 8 destinations essentielles pour plonger au cœur de cette richesse culturelle.
+      Le Nord du Vietnam est une mosaïque de cultures et de traditions préservées. 
+      Chaque ethnie apporte sa touche unique à travers ses vêtements, ses fêtes, 
+      son artisanat et sa cuisine. Plongez au cœur de ces traditions millénaires 
+      et découvrez un patrimoine culturel d'une richesse exceptionnelle.
     </p>
 
     <div class="grid-wrapper">
+      {# 1) Si on a des spots depuis le contrôleur #}
+      {% if spots is defined and spots|length > 0 %}
+        {% for spot in spots %}
+          <article class="grid-card"
+                  onclick="window.location='{{ path('app_experience_spot_show', {slug: spot.slug}) }}'">
+            <div class="grid-card-title">
+              {{ spot.title }}
+            </div>
 
-      {% set items = [
-        {
-          'title': 'Hà Giang – La symphonie H’Mông au milieu des montagnes de pierre',
-          'image': 'hagiang-culture.jpg',
-          'text': "À Hà Giang, la culture résonne dans l’air pur des hauts plateaux.
-Le khèn H’Mông, les flûtes et les chants d’amour s’élèvent lors des fêtes traditionnelles comme le Gầu Tào.
-Dans les marchés de Đồng Văn ou Mèo Vạc, les costumes brodés, les maisons en terre battue et les rituels de rencontre dévoilent un mode de vie authentique.
-Hà Giang est un tableau vivant où chaque geste raconte une histoire."
-        },
-        {
-          'title': 'Sapa – Le carrefour des cultures entre ciel et terre',
-          'image': 'sapa-culture.jpg',
-          'text': "Sapa est le lieu de rencontre de nombreuses ethnies : H’Mông, Dao rouge, Giáy…
-Vous y découvrirez l’art du tissage, les bains aux herbes médicinales des Dao, les chants rituels et les fêtes agricoles comme le Roóng Poọc.
-Les maisons en bois et les traditions séculaires créent une atmosphère à la fois mystérieuse et chaleureuse.
-À Sapa, chaque village est un univers culturel à part entière."
-        },
-        {
-          'title': 'Mù Cang Chải – L’art agricole des terrasses H’Mông',
-          'image': 'mucangchai-culture.jpg',
-          'text': "Les rizières en terrasses de Mù Cang Chải ne sont pas qu’un paysage spectaculaire : ce sont des œuvres culturelles façonnées par les H’Mông depuis des siècles.
-Les rites de bénédiction des champs, les techniques d’irrigation et les fêtes de la récolte témoignent d’une harmonie profonde entre l’homme et la nature.
-Ici, l’agriculture devient un patrimoine vivant."
-        },
-        {
-          'title': 'Ninh Bình – Le berceau de la culture vietnamienne',
-          'image': 'ninhbinh-culture.jpg',
-          'text': "Ninh Bình est un lieu où l’histoire et la culture vietnamiennes prennent vie.
-La cité antique de Hoa Lư, avec ses temples et son architecture traditionnelle, rappelle l’époque des dynasties Đinh et Lê.
-Les chants de chèo, les fêtes historiques et la vie rurale autour de Tràng An et Tam Cốc offrent un aperçu précieux de la culture du delta du Nord.
-Ninh Bình est une porte ouverte sur les origines du Vietnam."
-        },
-        {
-          'title': 'Baie d’Halong – La culture des villages flottants au cœur d’une merveille naturelle',
-          'image': 'halong-culture.jpg',
-          'text': "Au-delà de ses paysages iconiques, la baie d’Halong abrite des villages de pêcheurs comme Cửa Vạn, où les habitants vivent sur l’eau depuis des générations.
-Vous pourrez y découvrir les chants marins, les techniques de pêche traditionnelles et l’architecture unique des maisons flottantes.
-Halong est un trésor culturel aussi fascinant que ses paysages."
-        },
-        {
-          'title': 'Mai Châu – L’univers chaleureux des Thaï blancs',
-          'image': 'maichau-culture.jpg',
-          'text': "Mai Châu est une immersion douce dans la culture des Thaï blancs.
-Les maisons sur pilotis, les danses xòe, les mélodies du đàn tính, les étoffes tissées à la main et le vin de riz partagé autour du feu créent une ambiance conviviale et authentique.
-Mai Châu est un lieu où l’on se sent accueilli comme un membre de la famille."
-        },
-        {
-          'title': 'Ba Bể – La culture Tày au cœur de la nature sauvage',
-          'image': 'babe-culture.jpg',
-          'text': "Le village de Pác Ngòi, au bord du lac Ba Bể, est un véritable sanctuaire de la culture Tày.
-Vous pourrez y découvrir les maisons en bois sur pilotis, écouter le chant Then – un art sacré – et déguster des plats traditionnels préparés avec des produits locaux.
-Les légendes du lac, racontées au coin du feu, ajoutent une touche de mystère à ce lieu paisible.
-Ba Bể est une rencontre intime avec l’âme Tày."
-        },
-        {
-          'title': 'Cao Bằng – Terre de fêtes, de légendes et d’artisanat Nùng – Tày',
-          'image': 'caobang-culture.jpg',
-          'text': "Cao Bằng est l’un des territoires où les cultures Nùng et Tày sont les mieux préservées.
-Les fêtes Lồng Tồng, les chants sli et lượn, les forges traditionnelles de Phúc Sen et les maisons en torchis témoignent d’un patrimoine riche et vivant.
-Au-delà de la majestueuse cascade de Bản Giốc, ce sont les villages et leurs traditions qui séduisent les voyageurs.
-Cao Bằng est une mosaïque culturelle vibrante et authentique."
-        }
-      ] %}
+            <img
+              src="{{ asset('Image/bac/' ~ spot.imageFilename) }}"
+              alt="{{ spot.title }}"
+              class="grid-card-image"
+            >
 
-      {% for item in items %}
-        <article class="grid-card">
-          <div class="grid-card-title">{{ item.title }}</div>
+            <div class="grid-card-text">
+              {{ spot.shortDescription|slice(0, 260)|nl2br }}{% if spot.shortDescription|length > 260 %}…{% endif %}
+            </div>
 
-          <img
-            src="{{ asset('Image/bac/' ~ item.image) }}"
-            alt="{{ item.title }}"
-            class="grid-card-image"
-          >
+            <div class="grid-card-footer">
+              ♥ {{ spot.likesCount }} likes – {{ spot.comments|length }} comments
+            </div>
+          </article>
+        {% endfor %}
+      
+      {# 2) Fallback sur le contenu statique si pas de données #}
+      {% else %}
+        {% set items = [
+          {
+            'title': 'Marché de Bac Hà – La palette colorée des minorités',
+            'image': 'bac-ha-market.jpg',
+            'text': "Chaque dimanche, le marché de Bac Hà s'anime d'une effervescence unique. 
+  Les femmes H'mong, Dao, Tày et Nùng viennent y vendre leurs produits dans une explosion de couleurs. 
+  C'est bien plus qu'un lieu d'échange : c'est une véritable scène sociale où se mêlent rires, négociations et retrouvailles. 
+  Ici, l'artisanat traditionnel côtoie les saveurs locales, offrant un spectacle vivant de la culture montagnarde."
+          },
+          {
+            'title': 'Sapa – Les rizières en terrasses des H’mong',
+            'image': 'sapa-culture.jpg',
+            'text': "À Sapa, les rizières en terrasses épousent les montagnes comme une œuvre d'art vivante. 
+  Les H'mong, vêtus de leurs habits traditionnels bleu indigo, perpétuent des méthodes de culture ancestrales. 
+  Le marché de l'amour, les danses au son du khèn (orgue à bouche) et l'artisanat du chanvre racontent une culture profondément liée à la terre. 
+  Ici, chaque geste est empreint de tradition et de respect pour la nature."
+          },
+          {
+            'title': 'Hà Giang – Le royaume des H’mong fleuris',
+            'image': 'hagiang-culture.jpg',
+            'text': "Dans les montagnes escarpées de Hà Giang, les H'mong fleuris cultivent leur identité à travers des vêtements brodés de motifs complexes. 
+  Le marché de l'amour de Khâu Vai, où se retrouvent les amoureux une fois par an, est l'un des rituels les plus émouvants de la région. 
+  Les maisons en terre des villages isolés racontent une histoire de résilience et d'harmonie avec la nature."
+          },
+          {
+            'title': 'Mai Châu – La douceur de vivre des Thaï blancs',
+            'image': 'maichau-culture.jpg',
+            'text': "Mai Châu dévoile la culture raffinée des Thaï blancs. 
+  Les femmes tissent la soie sur d'anciens métiers en bois, créant des étoffes aux motifs géométriques élégants. 
+  Le xòe, danse traditionnelle au rythme lent, et les maisons sur pilotis entourées de rizières créent une atmosphère paisible. 
+  Ici, le temps semble s'écouler au rythme des saisons et des fêtes du calendrier lunaire."
+          },
+          {
+            'title': 'Mù Cang Chải – Le ballet des rizières en terrasses',
+            'image': 'mucangchai-culture.jpg',
+            'text': "Classées au patrimoine national, les rizières en terrasses de Mù Cang Chải sont le fruit d'un savoir-faire séculaire. 
+  Les H'mong y pratiquent une agriculture en parfaite symbiose avec la montagne. 
+  Les fêtes du riz, où l'on célèbre les récoltes, sont l'occasion de déguster le rượu cần (alcool de riz à siroter avec une paille de bambou) et d'admirer les danses au son des khèn. 
+  Ici, l'agriculture devient un patrimoine vivant."
+          },
+          {
+            'title': 'Ninh Bình – Le berceau de la culture vietnamienne',
+            'image': 'ninhbinh-culture.jpg',
+            'text': "Ninh Bình est un véritable musée à ciel ouvert de la culture vietnamienne. 
+  L'ancienne capitale Hoa Lư abrite des temples dédiés aux rois Dinh et Lê, témoins de l'indépendance du pays. 
+  Les spectacles de chant xẩm, art populaire classé par l'UNESCO, résonnent dans les grottes. 
+  Les artisans perpétuent la broderie de Kim Sơn, tandis que les barques en bambou glissent sur les rivières entre les pitons calcaires. 
+  Un voyage au cœur de l'âme vietnamienne."
+          },
+          {
+            'title': 'Lào Cai – La diversité ethnique à ciel ouvert',
+            'image': 'laocai-culture.jpg',
+            'text': "La province de Lào Cai est un kaléidoscope de cultures avec plus de 20 groupes ethniques. 
+  Chaque communauté, des Dao rouges aux Giáy en passant par les Xa Pho, préserve jalousement ses traditions. 
+  Les marchés ethniques comme celui de Cốc Ly ou de Cán Cấu offrent un spectacle haut en couleur, où se mêlent les langues, les costumes et les saveurs. 
+  Les fêtes traditionnelles, comme la danse du feu des Dao, plongent les visiteurs dans un univers mystique et authentique."
+          },
+          {
+            'title': 'Yên Bái – L'héritage des Tày et des Dao',
+            'image': 'yenbai-culture.jpg',
+            'text': "Yên Bái révèle la richesse culturelle des Tày et des Dao à travers leurs villages traditionnels. 
+  Les maisons sur pilotis des Tày s'ouvrent sur des paysages de théiers centenaires, tandis que les femmes Dao rouges pratiquent encore la cueillette des herbes médicinales. 
+  Le marché de Mù Cang Chải et ses démonstrations de tissage, ainsi que les cérémonies de passage à l'âge adulte des jeunes filles Dao, offrent un aperçu fascinant de traditions séculaires. 
+  Ici, chaque geste est porteur d'histoire et de sens."
+          }
+        ] %}
 
-          <div class="grid-card-text">
-            {{ item.text|nl2br }}
-          </div>
+        {% for item in items %}
+          <article class="grid-card">
+            <div class="grid-card-title">{{ item.title }}</div>
 
-          <div class="grid-card-footer">♥ 0 likes – 0 comments</div>
-        </article>
-      {% endfor %}
+            <img
+              src="{{ asset('Image/bac/' ~ item.image) }}"
+              alt="{{ item.title }}"
+              class="grid-card-image"
+            >
+
+            <div class="grid-card-text">
+              {{ item.text|nl2br }}
+            </div>
+
+            <div class="grid-card-footer">
+              ♥ 1.2k likes – 45 comments
+            </div>
+          </article>
+        {% endfor %}
+      {% endif %}
     </div>
   </section>
 {% endblock %}

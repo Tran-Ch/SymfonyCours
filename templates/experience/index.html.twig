@@ -277,7 +277,7 @@
         <h2 class="intro-text">Envie de découvrir une région du Vietnam ?</h2>
 
         <div class="explore-box">
-          {# hiện tại vẫn link tới file tĩnh; sau này bạn có thể đổi sang path('app_nord')... #}
+          {# đã đổi sang route Symfony cho 3 miền #}
           <button onclick="window.location.href='{{ path('app_nord') }}'">
             EXPLOREZ LE NORD
           </button>
@@ -330,6 +330,11 @@
       map.fitBounds(vnBounds);
     });
 
+    // URL Symfony cho 3 miền (render sẵn bằng Twig)
+    const urlNord   = "{{ path('app_nord') }}";
+    const urlCentre = "{{ path('app_centre') }}";
+    const urlSud    = "{{ path('app_sud') }}";
+
     const tooltip = document.getElementById('tooltip');
     const regions = document.querySelectorAll('.region');
 
@@ -351,9 +356,9 @@
 
       region.addEventListener('click', () => {
         const name = region.getAttribute('data-name');
-        if (name === 'Miền Bắc') window.location.href = 'nord.html';
-        if (name === 'Miền Trung') window.location.href = 'centre.html';
-        if (name === 'Miền Nam') window.location.href = 'sud.html';
+        if (name === 'Miền Bắc')   window.location.href = urlNord;
+        if (name === 'Miền Trung') window.location.href = urlCentre;
+        if (name === 'Miền Nam')   window.location.href = urlSud;
       });
     });
   </script>

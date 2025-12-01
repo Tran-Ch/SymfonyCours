@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+
+{# Title động #}
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{# Màu theo category #}
+{% set mainBg =
+    category == 'incroyable' ? 'rgba(233, 238, 209, 1)' :
+    (category == 'culture' ? '#d4c095' :
+    (category == 'tourisme' ? '#b7c89a' : 'rgba(233, 238, 209, 1)'))
+%}
+
+{% set titleColor =
+    category == 'incroyable' ? '#4a5932' :
+    (category == 'culture' ? '#5c3a1c' :
+    (category == 'tourisme' ? '#305433' : '#4a5932'))
+%}
+
+{% set cardBg =
+    category == 'incroyable' ? '#d7e48e' :
+    (category == 'culture' ? '#e5e39b' :
+    (category == 'tourisme' ? '#d9e6a9' : '#d7e48e'))
+%}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    main {
+      margin-top: 130px;
+      padding: 40px 20px 60px 20px;
+      background-color: {{ mainBg }};
+    }
+
+    .grid-page { max-width: 1200px; margin: 0 auto; }
+
+    .grid-page-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 16px;
+    }
+
+    .grid-page-header h1 {
+      font-size: 26px;
+      color: {{ titleColor }};
+      margin: 0;
+    }
+
+    .grid-page-header a { font-size: 14px; }
+
+    .grid-page-intro {
+      font-size: 14px; line-height: 1.6;
+      color: #3d4a27; margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .grid-wrapper {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      grid-auto-rows: minmax(200px,auto);
+      gap: 20px;
+    }
+
+    .grid-card {
+      background-color: {{ cardBg }};
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      display: flex; flex-direction: column;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .grid-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+    }
+
+    .grid-card-title {
+      font-weight: bold; margin-bottom: 8px;
+      font-size: 16px; color: #3d4a27;
+      min-height: 48px; display: flex; align-items: center;
+    }
+
+    .grid-card-image {
+      width: 100%; height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .grid-card-text {
+      font-size: 13px; color: #334;
+      flex-grow: 1; text-align: left;
+    }
+
+    .grid-card-footer {
+      font-size: 12px; color: #566;
+      margin-top: 8px; text-align: right;
+    }
+
+    @media (max-width: 992px) {
+      .grid-wrapper {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        grid-auto-rows: minmax(180px,auto);
+      }
+    }
+
+    @media (max-width: 576px) {
+      main { margin-top: 110px; padding: 25px 10px 40px 10px; }
+      .grid-wrapper {
+        grid-template-columns: 1fr;
+        grid-auto-rows: minmax(180px,auto);
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+<section class="grid-page">
+  <div class="grid-page-header">
+    <h1>{{ pageTitle }}</h1>
+
+    {# Nút quay lại #}
+    {% if region == 'nord' %}
+      <a href="{{ path('app_nord') }}" class="btn btn-long">
+        ← Retour à la carte du Nord
+      </a>
+    {% elseif region == 'centre' %}
+      <a href="{{ path('app_centre') }}" class="btn btn-long">
+        ← Retour à la carte du Centre
+      </a>
+    {% else %}
+      <a href="{{ path('app_sud') }}" class="btn btn-long">
+        ← Retour à la carte du Sud
+      </a>
+    {% endif %}
+  </div>
+
+  {# Đoạn intro – Bắc có text riêng, Trung/Nam dùng text chung #}
+  {% if region == 'nord' and category == 'incroyable' %}
+    <p class="grid-page-intro">… (đoạn giới thiệu incroyable nord của bạn) …</p>
+  {% elseif region == 'nord' and category == 'culture' %}
+    <p class="grid-page-intro">…</p>
+  {% elseif region == 'nord' and category == 'tourisme' %}
+    <p class="grid-page-intro">…</p>
+  {% else %}
+    <p class="grid-page-intro">
+      Découvrez une sélection de destinations uniques, entre paysages
+      remarquables, traditions locales et expériences authentiques.
+    </p>
+  {% endif %}
+
+  <div class="grid-wrapper">
+    {# 1) Có dữ liệu ExperienceSpot trong DB #}
+    {% if spots is defined and spots|length > 0 %}
+      {% for spot in spots %}
+        <article class="grid-card"
+                 onclick="window.location='{{ path('app_experience_spot_show', {slug: spot.slug}) }}'">
+          <div class="grid-card-title">{{ spot.title }}</div>
+
+          <img src="{{ asset(spot.imagePath) }}"
+               alt="{{ spot.title }}"
+               class="grid-card-image">
+
+          <div class="grid-card-text">
+            {{ spot.shortDescription|slice(0,260)|nl2br }}
+            {% if spot.shortDescription|length > 260 %}…{% endif %}
+          </div>
+
+          <div class="grid-card-footer">
+            ♥ {{ spot.likesCount }} likes – {{ spot.comments|length }} comments
+          </div>
+        </article>
+      {% endfor %}
+
+    {# 2) Không có dữ liệu → fallback tĩnh (chỉ Bắc – bạn giữ như cũ) #}
+    {% else %}
+      {# Các block items cho nord/culture & nord/tourisme giống file cũ của bạn #}
+      …
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

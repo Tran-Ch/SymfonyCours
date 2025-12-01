@@ -46,6 +46,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom = null;
 
+    // Tên file avatar, lưu trong /public/uploads/avatars
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatarFilename = null;
+
     /**
      * @var Collection<int, Story>
      */
@@ -218,6 +222,32 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return 'Utilisateur';
+    }
+
+    // --------- AVATAR ---------
+
+    public function getAvatarFilename(): ?string
+    {
+        return $this->avatarFilename;
+    }
+
+    public function setAvatarFilename(?string $avatarFilename): static
+    {
+        $this->avatarFilename = $avatarFilename;
+
+        return $this;
+    }
+
+    /**
+     * Đường dẫn (relative) dùng cho asset() trong Twig
+     */
+    public function getAvatarPath(): string
+    {
+        if ($this->avatarFilename) {
+            return 'uploads/avatars/' . $this->avatarFilename;
+        }
+
+        return 'images/default-avatar.png';
     }
 
     /**

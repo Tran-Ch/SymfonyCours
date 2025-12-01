@@ -49,6 +49,9 @@
             font-size: 14px;
             color: #3d4a27;
             margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .story-card-body {
@@ -98,8 +101,11 @@
             {% for story in stories %}
                 <article class="story-card">
                     <div class="story-card-header">
-                        {# trước: story.utilisateur.prenom ?? story.utilisateur.email ?? 'Utilisateur' #}
-                        {{ story.utilisateur.displayName }}
+                        <img src="{{ asset(story.utilisateur.avatarPath) }}"
+                             alt="avatar"
+                             class="rounded-circle"
+                             style="width:28px;height:28px;object-fit:cover;border:1px solid #3d4a27;">
+                        <span>{{ story.utilisateur.displayName }}</span>
                     </div>
 
                     <div class="story-card-body">

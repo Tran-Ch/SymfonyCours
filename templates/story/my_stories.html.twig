@@ -7,11 +7,10 @@
 
     {# HEADER PROFILE (avatar + tên) #}
     <div class="d-flex align-items-center mb-4">
-        <img src="{{ asset('images/default-avatar.png') }}" alt="avatar"
+        <img src="{{ asset(user.avatarPath) }}" alt="avatar"
              class="rounded-circle me-3"
-             style="width:70px;height:70px;object-fit:cover;">
+             style="width:70px;height:70px;object-fit:cover;border:2px solid #a7b942;">
         <div>
-            {# trước đây: {{ user.prenom ?? user.email }} #}
             <h4 class="mb-0">{{ user.displayName }}</h4>
             <small class="text-muted">Story de voyage</small>
         </div>

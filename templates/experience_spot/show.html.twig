@@ -1,35 +1,42 @@
-{# templates/experience_spot/show.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ spot.title }}{% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
+
+  {% set pageBg =
+    spot.category == 'incroyable' ? 'rgba(233, 238, 209, 1)' :
+    (spot.category == 'culture' ? '#d4c095' :
+    (spot.category == 'tourisme' ? '#b7c89a' : 'rgba(233, 238, 209, 1)'))
+  %}
+
+  {% set cardBg =
+    spot.category == 'incroyable' ? '#d7e48e' :
+    (spot.category == 'culture' ? '#e5e39b' :
+    (spot.category == 'tourisme' ? '#d9e6a9' : '#d7e48e'))
+  %}
+
   <style>
-    /* main {
+    main {
       margin-top: 130px;
       padding: 40px 20px 60px 20px;
-      background-color: rgba(233, 238, 209, 1);
-    } */
-
-    .spot-page {
-      max-width: 980px;
-      margin: 0 auto;
+      background-color: {{ pageBg }};
     }
+
+    .spot-page { max-width: 980px; margin: 0 auto; }
 
     .spot-main-card {
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
       border-radius: 18px;
       overflow: hidden;
-      background-color: #d7e48e;
+      background-color: {{ cardBg }};
       margin-bottom: 24px;
     }
 
     .spot-main-image {
-      width: 100%;
-      max-height: 500px;
-      object-fit: cover;
-      display: block;
+      width: 100%; max-height: 500px;
+      object-fit: cover; display: block;
     }
 
     .spot-main-header {
@@ -37,56 +44,34 @@
       border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
-    .spot-main-header h1 {
-      font-size: 22px;
-      margin-bottom: 4px;
-    }
+    .spot-main-header h1 { font-size: 22px; margin-bottom: 4px; }
 
-    .spot-main-header small {
-      font-size: 13px;
-      color: #374325;
-    }
+    .spot-main-header small { font-size: 13px; color: #374325; }
 
     .spot-main-body {
       padding: 18px 22px 20px 22px;
-      font-size: 14px;
-      line-height: 1.8;
-      color: rgba(90, 92, 30, 1);   /* sửa lại color hợp lệ */
-      text-align: left !important; /* text canh trái */
+      font-size: 14px; line-height: 1.8;
+      color: rgba(90,92,30,1);
+      text-align: left !important;
     }
 
-    .spot-main-body p {
-      margin-bottom: 8px;
-    }
+    .spot-main-body p { margin-bottom: 8px; }
 
     .spot-meta-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       padding: 0 22px 14px 22px;
-      font-size: 13px;
-      color: #243013;
+      font-size: 13px; color: #243013;
     }
 
-    .spot-meta-bar span {
-      margin-left: 10px;
-    }
+    .spot-meta-bar span { margin-left: 10px; }
 
-    /* Comment list + form */
     .spot-comments-title {
-      font-size: 18px;
-      margin-bottom: 12px;
-      color: #3b4323;
+      font-size: 18px; margin-bottom: 12px; color: #3b4323;
     }
 
-    @media (max-width: 768px) {
-      main {
-        margin-top: 110px;
-        padding: 30px 10px 40px 10px;
-      }
-      .spot-main-header h1 {
-        font-size: 20px;
-      }
+    @media (max-width:768px) {
+      main { margin-top: 110px; padding: 30px 10px 40px 10px; }
+      .spot-main-header h1 { font-size: 20px; }
     }
   </style>
 {% endblock %}
@@ -95,18 +80,15 @@
 <main>
   <div class="spot-page">
 
-    {# CARD CHÍNH: ẢNH + TIÊU ĐỀ + MÔ TẢ DÀI + LIKE #}
     <article class="spot-main-card">
-      <img src="{{ asset('Image/bac/' ~ spot.imageFilename) }}"
+      <img src="{{ asset(spot.imagePath) }}"
            alt="{{ spot.title }}"
            class="spot-main-image">
 
       <div class="spot-main-header d-flex justify-content-between align-items-center">
         <div>
           <h1 class="mb-1">{{ spot.title }}</h1>
-          <small>
-            Région : {{ spot.region|capitalize }} – Catégorie : {{ spot.category|capitalize }}
-          </small>
+          <small>Région : {{ spot.region|capitalize }} – Catégorie : {{ spot.category|capitalize }}</small>
         </div>
 
         <form method="post" action="{{ path('app_experience_spot_like', {slug: spot.slug}) }}">
@@ -118,7 +100,6 @@
       </div>
 
       <div class="spot-main-body">
-        {# dùng shortDescription như nội dung đầy đủ (đã lưu rất dài trong fixtures Hà Giang) #}
         {{ spot.shortDescription|nl2br }}
       </div>
 
@@ -131,7 +112,6 @@
       </div>
     </article>
 
-    {# COMMENTAIRES #}
     <h5 class="spot-comments-title">Commentaires ({{ spot.comments|length }})</h5>
 
     {% if spot.comments is not empty %}
@@ -139,7 +119,17 @@
         {% for comment in spot.comments %}
           <div class="list-group-item">
             <div class="d-flex justify-content-between">
-              <strong>{{ comment.utilisateur ? comment.utilisateur.displayName : 'Utilisateur' }}</strong>
+              <div class="d-flex align-items-center">
+                {% if comment.utilisateur %}
+                  <img src="{{ asset(comment.utilisateur.avatarPath) }}"
+                       alt="avatar"
+                       class="rounded-circle me-2"
+                       style="width:28px;height:28px;object-fit:cover;border:1px solid #ccc;">
+                  <strong>{{ comment.utilisateur.displayName }}</strong>
+                {% else %}
+                  <strong>Utilisateur</strong>
+                {% endif %}
+              </div>
               <small class="text-muted">{{ comment.date|date('d/m/Y H:i') }}</small>
             </div>
             <p class="mb-0 mt-2">{{ comment.text|nl2br }}</p>
@@ -150,7 +140,6 @@
       <p class="text-muted mb-4">Aucun commentaire pour l’instant.</p>
     {% endif %}
 
-    {# FORM COMMENT #}
     <div class="card mb-4">
       <div class="card-header">Laisser un commentaire</div>
       <div class="card-body">
@@ -170,9 +159,17 @@
       </div>
     </div>
 
-    <a href="{{ path('app_nord_incroyable') }}" class="btn btn-outline-secondary">
-      ← Retour à la liste
-    </a>
+    {# Nút quay lại list theo region/category hiện tại #}
+    {% if spot.category in ['incroyable','culture','tourisme'] %}
+      <a href="{{ path('app_experience_list', {region: spot.region, category: spot.category}) }}"
+         class="btn btn-outline-secondary">
+        ← Retour à la liste
+      </a>
+    {% else %}
+      <a href="{{ path('app_experience') }}" class="btn btn-outline-secondary">
+        ← Retour aux expériences
+      </a>
+    {% endif %}
   </div>
 </main>
 {% endblock %}

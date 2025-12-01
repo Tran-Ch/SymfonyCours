@@ -5,7 +5,6 @@
 {% block stylesheets %}
   {{ parent() }}
   <style>
-    /* tránh tràn ngang cho mọi kích thước */
     html, body {
       overflow-x: hidden;
     }
@@ -20,7 +19,6 @@
       background-color: transparent;
     }
 
-    /* ===== LAYOUT 2 CỘT: MAP TRÁI – NỘI DUNG PHẢI ===== */
     .sud-wrapper {
       max-width: 1200px;
       margin: 0 auto;
@@ -30,7 +28,6 @@
       align-items: flex-start;
     }
 
-    /* cột trái: map + card tỉnh – xếp dọc, căn giữa theo ngang (màn hình lớn) */
     .sud-map-card {
       background-color: transparent;
       border-radius: 20px;
@@ -64,6 +61,7 @@
       gap: 10px;
     }
 
+    /* NÚT CHÍNH CỦA SUD – CÙNG MÀU VỚI CENTRE/NORD */
     .sud-main-btn {
       background-color: rgba(216, 228, 159, 1);
       border-radius: 12px;
@@ -100,8 +98,6 @@
       margin-bottom: 6px;
     }
 
-    /* ===== PHẦN MAP SVG + CARD TỈNH – MÀN HÌNH LỚN (GIỮ NGUYÊN) ===== */
-
     .map-section {
       width: 100%;
       height: auto;
@@ -122,19 +118,18 @@
       border-radius: 0;
       box-shadow: none;
       overflow: visible;
-      margin-top: -80px;   /* kéo map lên một chút dưới header (màn hình lớn) */
+      margin-top: -80px;
     }
 
     .map-container svg {
       display: block;
-      width: 330px;        /* kích thước logic ban đầu */
+      width: 330px;
       height: auto;
-      transform: scale(2.5);          /* tỷ lệ map màn hình lớn – GIỮ NGUYÊN */
+      transform: scale(2.5);
       transform-origin: top left;
       margin-left: -600px;
     }
 
-    /* hiệu ứng hover tỉnh */
     .province > g path {
       transition: fill 0.25s ease, opacity 0.25s ease, stroke-width 0.25s ease;
     }
@@ -154,7 +149,6 @@
       fill: #c97a38;
     }
 
-    /* tooltip tên tỉnh */
     #tooltip {
       position: fixed;
       background: rgba(0,0,0,0.8);
@@ -169,7 +163,6 @@
       z-index: 9999;
     }
 
-    /* card thông tin – dưới map, giữa cột (màn hình lớn) */
     .city-info-wrapper {
       width: 100%;
       max-width: 420px;
@@ -224,11 +217,8 @@
       background-color: #406459 !important;
     }
 
-    /* ==========================================================
-       ==========  TỪ ĐÂY TRỞ XUỐNG: CHỈ CHỈNH MÀN HÌNH NHỎ HƠN ==========
-       ========================================================== */
+    /* RESPONSIVE */
 
-    /* <= 1200px: map to gấp đôi hiện tại, vẫn 2 cột */
     @media (max-width: 1200px) {
       .sud-wrapper {
         grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
@@ -244,14 +234,14 @@
       }
 
       .map-container {
-        margin-top: -40px; /* có thể chỉnh thêm nếu muốn cao/thấp hơn */
+        margin-top: -40px;
       }
 
       .map-container svg {
-        width: 660px;        /* GẤP ĐÔI 330px */
-        max-width: 100%;     /* tự co nếu không đủ chỗ */
+        width: 660px;
+        max-width: 100%;
         height: auto;
-        transform: none;     /* bỏ scale để không bị crop */
+        transform: none;
         margin-left: 0;
       }
 
@@ -259,11 +249,10 @@
         width: 100%;
         max-width: 660px;
         margin: 24px auto 0;
-        justify-content: center;  /* card giữa theo trục ngang */
+        justify-content: center;
       }
     }
 
-    /* <= 992px: map + card xếp dọc, card luôn giữa dưới map */
     @media (max-width: 992px) {
       .sud-wrapper {
         grid-template-columns: 1fr;
@@ -289,7 +278,7 @@
 
       .map-container svg {
         width: 660px;
-        max-width: 480px;   /* to nhưng không tràn */
+        max-width: 480px;
         height: auto;
       }
 
@@ -302,7 +291,6 @@
       }
     }
 
-    /* <= 768px: thu nhỏ thêm, vẫn giữa dưới map */
     @media (max-width: 768px) {
       main {
         margin-top: 120px;
@@ -334,7 +322,6 @@
       }
     }
 
-    /* <= 576px: rất nhỏ – giữ giữa, map/card thu chút nữa */
     @media (max-width: 576px) {
       main {
         margin-top: 110px;
@@ -357,7 +344,6 @@
 
 {% block body %}
   <section class="sud-wrapper">
-    {# CỘT TRÁI: MAP + CARD TỈNH #}
     <div class="sud-map-card">
       <div class="map-section">
         <div class="map-container">
@@ -498,17 +484,18 @@
         <h1>EXPÉRIENCE DU SUD</h1>
 
         <div class="sud-btn-box">
+            {# ĐỔI CLASS → sud-main-btn ĐỂ ĐÚNG MÀU #}
             <button class="sud-main-btn"
-                    onclick="window.location.href='{{ path('app_sud_incroyable') }}'">
-            EXPÉRIENCE INCROYABLE
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'sud', category: 'incroyable'}) }}'">
+              EXPÉRIENCE INCROYABLE
             </button>
             <button class="sud-main-btn"
-                    onclick="window.location.href='{{ path('app_sud_culture') }}'">
-            DÉCOUVREZ LA CULTURE
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'sud', category: 'culture'}) }}'">
+              DÉCOUVREZ LA CULTURE
             </button>
             <button class="sud-main-btn"
-                    onclick="window.location.href='{{ path('app_sud_tourisme') }}'">
-            TOURISME DE VACANCES
+                    onclick="window.location.href='{{ path('app_experience_list', {region: 'sud', category: 'tourisme'}) }}'">
+              TOURISME DE VACANCES
             </button>
         </div>
 
@@ -519,7 +506,7 @@
 
         <p class="sud-description">
             <strong>Le Sud – Énergie urbaine et nature luxuriante</strong>
-            Le sud du Vietnam est synonyme de dynamisme et de diversité. À Hô Chi Minh-Ville, l’effervescence moderne côtoie les vestiges coloniaux. Le delta du Mékong, avec ses marchés flottants et ses villages paisibles, vous invite à une immersion authentique dans la vie locale.
+            Le sud du Vietnam est synonyme de dynamisme et de diversité...
         </p>
 
     </div>

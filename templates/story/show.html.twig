@@ -8,10 +8,14 @@
     {# HEADER + NÚT LIKE #}
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center bg-success text-white">
-            <div>
-                Story de
-                {# trước: story.utilisateur.prenom ?? story.utilisateur.email ?? 'Utilisateur' #}
-                <strong>{{ story.utilisateur.displayName }}</strong>
+            <div class="d-flex align-items-center">
+                <img src="{{ asset(story.utilisateur.avatarPath) }}"
+                     alt="avatar"
+                     class="rounded-circle me-2"
+                     style="width:32px;height:32px;object-fit:cover;border:1px solid #fff;">
+                <span>
+                    Story de <strong>{{ story.utilisateur.displayName }}</strong>
+                </span>
             </div>
 
             <form method="post" action="{{ path('app_story_like', {id: story.id}) }}">
@@ -34,8 +38,17 @@
             {% for comment in comments %}
                 <div class="list-group-item">
                     <div class="d-flex justify-content-between">
-                        {# trước: comment.utilisateur.prenom ?? comment.utilisateur.email ?? 'Anonyme' #}
-                        <strong>{{ comment.utilisateur ? comment.utilisateur.displayName : 'Anonyme' }}</strong>
+                        <div class="d-flex align-items-center">
+                            {% if comment.utilisateur %}
+                                <img src="{{ asset(comment.utilisateur.avatarPath) }}"
+                                     alt="avatar"
+                                     class="rounded-circle me-2"
+                                     style="width:28px;height:28px;object-fit:cover;border:1px solid #ccc;">
+                                <strong>{{ comment.utilisateur.displayName }}</strong>
+                            {% else %}
+                                <strong>Anonyme</strong>
+                            {% endif %}
+                        </div>
                         <small class="text-muted">{{ comment.date|date('d/m/Y') }}</small>
                     </div>
                     <p class="mb-0 mt-2">{{ comment.text|nl2br }}</p>

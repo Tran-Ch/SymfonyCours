@@ -82,7 +82,7 @@ class QuizController extends AbstractController
             ],
         ];
 
-        return $this->render('quiz/index_quiz.html.twig', [
+        return $this->render('quiz/index.html.twig', [
             'questions' => $questions,
             'results' => $results
         ]);

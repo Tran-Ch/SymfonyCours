@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-3">Résultats de recherche</h1>
+
+    {% if query %}
+        <p>Vous avez cherché : <strong>{{ query }}</strong></p>
+
+        <hr>
+
+        <p>
+            Nous n'avons pas pu reconnaître assez d'informations pour vous envoyer
+            directement vers une expérience précise.
+        </p>
+
+        <p class="mb-2">Essayez par exemple :</p>
+        <ul>
+            <li><code>nord incroyable</code> → EXPÉRIENCE INCROYABLE du Nord</li>
+            <li><code>centre culture</code> → DÉCOUVREZ LA CULTURE du Centre</li>
+            <li><code>sud tourisme</code> → TOURISME DE VACANCES du Sud</li>
+        </ul>
+    {% else %}
+        <p>Aucun mot-clé n'a été fourni.</p>
+    {% endif %}
+</div>
+{% endblock %}

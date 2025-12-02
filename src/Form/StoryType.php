@@ -8,18 +8,20 @@ use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;           // <-- NEW
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;                   // <-- NEW
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class StoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $isEdit = $options['is_edit'] ?? false;
-        $isUserLoggedIn = $options['user_logged_in'] ?? false;
+        $isEdit          = $options['is_edit'] ?? false;
+        $isUserLoggedIn  = $options['user_logged_in'] ?? false;
 
         $builder
             // Champ utilisateur (affiché uniquement si l'utilisateur n'est pas connecté)
@@ -33,8 +35,8 @@ class StoryType extends AbstractType
                 'constraints' => !$isUserLoggedIn ? [
                     new NotBlank([
                         'message' => 'Veuillez sélectionner un auteur',
-                        'groups' => ['anonymous']
-                    ])
+                        'groups'  => ['anonymous'],
+                    ]),
                 ] : [],
                 'disabled' => $isEdit || $isUserLoggedIn,
                 'attr' => array_merge(
@@ -42,51 +44,71 @@ class StoryType extends AbstractType
                     ['data-testid' => 'story_utilisateur']
                 ),
                 'placeholder' => !$isUserLoggedIn ? 'Sélectionnez un auteur' : '',
-                'group_by' => null
+                'group_by'    => null,
             ])
 
             // Champ contenu
             ->add('contenu', TextareaType::class, [
                 'label' => 'Votre histoire',
-                'attr' => [
-                    'rows' => 8,
-                    'class' => 'form-control',
-                    'placeholder' => 'Racontez votre expérience...'
+                'attr'  => [
+                    'rows'        => 8,
+                    'class'       => 'form-control',
+                    'placeholder' => 'Racontez votre expérience...',
                 ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Le contenu ne peut pas être vide',
-                    ])
-                ]
+                    ]),
+                ],
             ])
 
             // Champ événements
             ->add('evenements', EntityType::class, [
                 'class' => Evenement::class,
-                'choice_label' => function(Evenement $evenement) {
-                    $date = $evenement->getDateDebut() ? $evenement->getDateDebut()->format('d/m/Y') : 'Date inconnue';
+                'choice_label' => function (Evenement $evenement) {
+                    $date = $evenement->getDateDebut()
+                        ? $evenement->getDateDebut()->format('d/m/Y')
+                        : 'Date inconnue';
+
                     return sprintf('%s - %s', $evenement->getNom(), $date);
                 },
-                'multiple' => true,
-                'expanded' => false,
-                'required' => false,
-                'label' => 'Événements associés',
+                'multiple'    => true,
+                'expanded'    => false,
+                'required'    => false,
+                'label'       => 'Événements associés',
                 'placeholder' => 'Sélectionnez un ou plusieurs événements',
-                'attr' => [
-                    'class' => 'form-select',
-                    'data-placeholder' => 'Rechercher un événement...'
-                ]
+                'attr'        => [
+                    'class'            => 'form-select',
+                    'data-placeholder' => 'Rechercher un événement...',
+                ],
+            ])
+
+            // NEW: Champ image pour la story (upload)
+            ->add('imageFile', FileType::class, [
+                'label'    => 'Image pour votre histoire (optionnelle)',
+                'mapped'   => false,          // không map trực tiếp vào Story (ta setImage() trong controller)
+                'required' => false,
+                'attr'     => [
+                    'class' => 'form-control',
+                ],
+                'constraints' => [
+                    new File([
+                        'maxSize'        => '5M',
+                        'mimeTypes'      => ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+                        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPEG, PNG, GIF, WebP)',
+                    ]),
+                ],
             ])
 
             // NEW: Story publique / privée
             ->add('isPublic', CheckboxType::class, [
-                'label' => 'Rendre cette histoire publique (visible par tous)',
+                'label'    => 'Rendre cette histoire publique (visible par tous)',
                 'required' => false,
                 // khi tạo mới: mặc định public = true ; khi edit: giữ giá trị hiện tại
-                'data' => $isEdit ? null : true,
-                'mapped' => true,
-                'label_attr' => ['class' => 'form-check-label'],
-                'attr' => ['class' => 'form-check-input'],
+                'data'      => $isEdit ? null : true,
+                'mapped'    => true,
+                'label_attr'=> ['class' => 'form-check-label'],
+                'attr'      => ['class' => 'form-check-input'],
             ])
         ;
     }
@@ -94,11 +116,11 @@ class StoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Story::class,
-            'is_edit' => false,
+            'data_class'     => Story::class,
+            'is_edit'        => false,
             'user_logged_in' => false,
             'validation_groups' => function (FormInterface $form) {
-                $data = $form->getData();
+                $data   = $form->getData();
                 $groups = ['Default'];
 
                 // Si l'utilisateur n'est pas connecté, on ajoute le groupe de validation

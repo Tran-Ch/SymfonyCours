@@ -54,9 +54,13 @@ class Story
     #[ORM\OneToMany(mappedBy: 'story', targetEntity: StoryLike::class, orphanRemoval: true)]
     private Collection $likes;
 
-    // === NEW: Story public / privé ===
+    // === Story public / privé ===
     #[ORM\Column(type: 'boolean')]
     private bool $isPublic = true;
+
+    // === NOUVEAU: image de la story ===
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
 
     public function __construct()
     {
@@ -192,7 +196,6 @@ class Story
         return false;
     }
 
-    // === GET/SET isPublic ===
     public function isPublic(): bool
     {
         return $this->isPublic;
@@ -201,6 +204,18 @@ class Story
     public function setIsPublic(bool $isPublic): static
     {
         $this->isPublic = $isPublic;
+        return $this;
+    }
+
+    // === GET/SET image ===
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
         return $this;
     }
 }

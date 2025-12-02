@@ -294,7 +294,10 @@
       <div class="quiz-text">
         <h3>Quel type de voyageur êtes-vous ?</h3>
         <p>En seulement deux minutes, trouvez l’aventure qui vous correspond.</p>
-        <button class="quiz-button" onclick="window.location.href='quiz.html'">Faites le quiz !</button>
+        <button class="quiz-button" onclick="window.location.href='{{ path('quiz') }}'">
+            Faites le quiz !
+        </button>
+
       </div>
     </div>
   </div>

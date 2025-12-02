@@ -2,15 +2,16 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Evenement;
+use App\Entity\Utilisateur;
 use App\Form\EvenementType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class EvenementCreerController extends AbstractController
@@ -26,25 +27,24 @@ final class EvenementCreerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gestion de l'upload d'image
-            /** @var UploadedFile $imageFile */
+            /** @var UploadedFile|null $imageFile */
             $imageFile = $form->get('image')->getData();
 
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                $safeFilename     = $slugger->slug($originalFilename);
+                $newFilename      = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
 
                 try {
-                    // => public/Image
                     $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/Image',
+                        $this->getParameter('kernel.project_dir').'/public/Image',
                         $newFilename
                     );
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Erreur lors de l\'upload de l\'image');
                 }
 
+                // Lưu trực tiếp tên file (không thư mục con)
                 $evenement->setImage($newFilename);
             }
 
@@ -57,7 +57,6 @@ final class EvenementCreerController extends AbstractController
         }
 
         return $this->render('evenement_creer/index.html.twig', [
-            'controller_name' => 'EvenementCreerController',
             'form' => $form->createView(),
         ]);
     }
@@ -103,19 +102,17 @@ final class EvenementCreerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gestion de l'upload d'image
-            /** @var UploadedFile $imageFile */
+            /** @var UploadedFile|null $imageFile */
             $imageFile = $form->get('image')->getData();
 
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                $safeFilename     = $slugger->slug($originalFilename);
+                $newFilename      = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
 
                 try {
-                    // => public/Image
                     $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/Image',
+                        $this->getParameter('kernel.project_dir').'/public/Image',
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -135,8 +132,8 @@ final class EvenementCreerController extends AbstractController
         }
 
         return $this->render('evenement_creer/edit.html.twig', [
-            'form' => $form->createView(),
-            'evenement' => $evenement,
+            'form'       => $form->createView(),
+            'evenement'  => $evenement,
         ]);
     }
 
@@ -161,7 +158,51 @@ final class EvenementCreerController extends AbstractController
             $entityManager->remove($evenement);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Événement supprimé avec succès !');
+            $this->addFlash('success', 'Événement supprimé với succès !');
+        }
+
+        return $this->redirectToRoute('app_evenement_liste');
+    }
+
+    /* ---------- USER CHỌN / BỎ CHỌN MỘT ÉVÉNEMENT ---------- */
+    #[Route(
+        '/evenement/{id}/toggle',
+        name: 'app_evenement_toggle_my',
+        requirements: ['id' => '\d+'],
+        methods: ['POST']
+    )]
+    public function toggleMyEvent(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        /** @var Utilisateur|null $user */
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('error', 'Vous devez être connecté pour gérer vos événements.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $evenement = $entityManager->getRepository(Evenement::class)->find($id);
+        if (!$evenement) {
+            throw $this->createNotFoundException('Événement inexistant.');
+        }
+
+        // Utilisateur <-> Evenement (ManyToMany)
+        if ($user->getEvenements()->contains($evenement)) {
+            $user->removeEvenement($evenement);
+            $this->addFlash('success', 'Événement retiré de vos événements.');
+        } else {
+            $user->addEvenement($evenement);
+            $this->addFlash('success', 'Événement ajouté à vos événements.');
+        }
+
+        $entityManager->flush();
+
+        // quay lại trang trước (liste, détail, ...)
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            return $this->redirect($referer);
         }
 
         return $this->redirectToRoute('app_evenement_liste');

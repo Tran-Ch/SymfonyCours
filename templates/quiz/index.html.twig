@@ -1,7 +1,10 @@
+{# templates/quiz/index.html.twig #}
 {% extends 'base.html.twig' %}
 
+{% block title %}Découvrez votre style de voyage{% endblock %}
+
 {% block body %}
-<div class="container py-5">
+<div class="container py-5" style="margin-top: 120px; max-width: 900px;">
   <h1 class="text-center mb-4">Découvrez votre style de voyage</h1>
 
   <div class="progress mb-4">
@@ -10,7 +13,8 @@
 
   <div id="quiz-container"></div>
 
-  <div class="text-center mt-4">
+  {# thanh nút điều hướng chung cho phần câu hỏi #}
+  <div class="text-center mt-4" id="quiz-nav-buttons">
     <button id="prev-btn" class="btn btn-secondary btn-lg me-2" disabled>Précédent</button>
     <button id="next-btn" class="btn btn-primary btn-lg">Suivant</button>
   </div>
@@ -18,6 +22,25 @@
 
 <style>
   .fade-slide { animation: fadeSlide 0.5s ease-in-out; }
+
+/* Dịch hàng chọn câu trả lời sang phải */
+  .form-check {
+      margin-left: 90px;   /* chỉnh giá trị tùy ý, 20–40px đều đẹp */
+  }
+
+  /* Làm vòng tròn radio đậm hơn */
+  .form-check-input {
+      border: 2px solid #4a6460 !important;   /* màu đậm hơn */
+      width: 20px;
+      height: 20px;
+  }
+
+  /* Khi được chọn – màu đậm + rõ */
+  .form-check-input:checked {
+      background-color: #4a6460 !important;
+      border-color: #4a6460 !important;
+  }
+
   @keyframes fadeSlide {
     from { opacity: 0; transform: translateX(50px); }
     to { opacity: 1; transform: translateX(0); }
@@ -25,75 +48,163 @@
 </style>
 
 <script>
-const questions = {{ questions|json_encode|raw }};
-const resultsData = {{ results|json_encode|raw }};
-let currentIndex = 0;
-let answers = Array(questions.length).fill(null);
+  // Dữ liệu từ controller
+  const questions   = {{ questions|json_encode|raw }};
+  const resultsData = {{ results|json_encode|raw }};
 
-const container = document.getElementById('quiz-container');
-const progressBar = document.getElementById('progress-bar');
-const nextBtn = document.getElementById('next-btn');
-const prevBtn = document.getElementById('prev-btn');
+  // Mapping kiểu traveller -> category route /experience/{region}/{category}
+  const typeToCategory = {
+    adventure: 'incroyable',
+    culture:   'culture',
+    relax:     'tourisme'
+  };
 
-function showQuestion() {
-  if(currentIndex >= questions.length) {
-    showResult();
-    return;
+  // URL trang bản đồ experience (cho nút "Retour à la carte")
+  const urlExperienceMap = "{{ path('app_experience') }}";
+
+  let currentIndex = 0;
+  let answers = Array(questions.length).fill(null);
+  let bestType = null; // lưu kiểu traveller thắng
+
+  const container   = document.getElementById('quiz-container');
+  const progressBar = document.getElementById('progress-bar');
+  const nextBtn     = document.getElementById('next-btn');
+  const prevBtn     = document.getElementById('prev-btn');
+  const navButtons  = document.getElementById('quiz-nav-buttons');
+
+  function showQuestion() {
+    if (currentIndex >= questions.length) {
+      showResult();
+      return;
+    }
+
+    const q = questions[currentIndex];
+    let html = `<div class="card p-3 fade-slide">
+                  <p><b>${currentIndex + 1}. ${q.q}</b></p>`;
+
+    q.options.forEach(opt => {
+      const checked = answers[currentIndex] === opt.val ? 'checked' : '';
+      html += `<div class="form-check">
+                 <input class="form-check-input"
+                        type="radio"
+                        name="q${currentIndex}"
+                        value="${opt.val}"
+                        ${checked}>
+                 <label class="form-check-label">${opt.label}</label>
+               </div>`;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+
+    progressBar.style.width = (currentIndex / questions.length * 100) + "%";
+    prevBtn.disabled = currentIndex === 0;
+    // luôn là "Suivant" – không còn chữ Terminer
+    nextBtn.textContent = 'Suivant';
+    navButtons.style.display = 'block';
   }
-  const q = questions[currentIndex];
-  let html = `<div class="card p-3 fade-slide"><p><b>${currentIndex+1}. ${q.q}</b></p>`;
-  q.options.forEach(opt => {
-    const checked = answers[currentIndex]===opt.val ? 'checked' : '';
-    html += `<div class="form-check">
-               <input class="form-check-input" type="radio" name="q${currentIndex}" value="${opt.val}" ${checked}>
-               <label class="form-check-label">${opt.label}</label>
-             </div>`;
+
+  // vẽ màn hình chọn vùng (Nord/Centre/Sud) dựa trên bestType
+  function renderRegionChoice() {
+    if (!bestType) return;
+
+    container.innerHTML = `
+      <div class="card shadow-lg p-4 text-center fade-slide">
+        <h2>Quelle région du Vietnam souhaitez-vous explorer ?</h2>
+        <button class="btn btn-outline-primary m-2"
+                onclick="showFinalResult('nord')">
+          Nord
+        </button>
+        <button class="btn btn-outline-warning m-2"
+                onclick="showFinalResult('centre')">
+          Centre
+        </button>
+        <button class="btn btn-outline-success m-2"
+                onclick="showFinalResult('sud')">
+          Sud
+        </button>
+      </div>`;
+
+    progressBar.style.width = "100%";
+    navButtons.style.display = 'block';  // vẫn hiện prev/suivant ở màn này
+  }
+
+  function showResult() {
+    let scores = {"adventure": 0, "culture": 0, "relax": 0};
+    answers.forEach(a => { if (a) scores[a]++; });
+
+    bestType = Object.keys(scores).reduce((a, b) =>
+      scores[a] >= scores[b] ? a : b
+    );
+
+    renderRegionChoice();
+  }
+
+  // Màn kết quả cuối cùng
+  function showFinalResult(region) {
+    const type      = bestType;
+    const res       = resultsData[type][region];
+    const category  = typeToCategory[type];
+    const experienceUrl = `/experience/${region}/${category}`;
+
+    // Ẩn hẳn thanh nút dưới (Précédent / Suivant)
+    navButtons.style.display = 'none';
+
+    container.innerHTML = `
+      <div class="card shadow-lg p-4 text-center fade-slide">
+        <h1>${res.title}</h1>
+
+        <img src="${res.img}"
+             class="img-fluid rounded mb-4"
+             style="max-height:300px;object-fit:cover;">
+
+        <p class="lead">
+          Destinations suggérées : <b>${res.places}</b>
+        </p>
+
+        <div class="mt-3 mb-2 d-flex flex-wrap justify-content-center gap-2">
+          <button type="button"
+                  class="btn btn-outline-secondary btn-lg"
+                  onclick="renderRegionChoice()">
+            Précédent
+          </button>
+
+          <a href="${experienceUrl}"
+             class="btn btn-primary btn-lg">
+            Voir ces expériences
+          </a>
+
+          <a href="${urlExperienceMap}"
+             class="btn btn-outline-secondary btn-lg">
+            Retour à la carte
+          </a>
+        </div>
+
+        <button onclick="location.reload()"
+                class="btn btn-success btn-lg mt-3">
+          Recommencer
+        </button>
+      </div>`;
+  }
+
+  // --- Events ---
+  nextBtn.addEventListener('click', () => {
+    const selected = document.querySelector(`input[name="q${currentIndex}"]:checked`);
+    if (!selected) {
+      alert('Veuillez choisir une réponse !');
+      return;
+    }
+    answers[currentIndex] = selected.value;
+    currentIndex++;
+    showQuestion();
   });
-  html += `</div>`;
-  container.innerHTML = html;
-  progressBar.style.width = ((currentIndex)/questions.length*100) + "%";
-  prevBtn.disabled = currentIndex === 0;
-  nextBtn.textContent = currentIndex === questions.length-1 ? 'Voir le résultat' : 'Suivant';
-}
 
-function showResult() {
-  let scores = {"adventure":0,"culture":0,"relax":0};
-  answers.forEach(a => { if(a) scores[a]++; });
-  const maxType = Object.keys(scores).reduce((a,b)=>scores[a]>=scores[b]?a:b);
+  prevBtn.addEventListener('click', () => {
+    if (currentIndex > 0) currentIndex--;
+    showQuestion();
+  });
 
-  container.innerHTML = `
-    <div class="card shadow-lg p-4 text-center fade-slide">
-      <h2>Quelle région du Vietnam souhaitez-vous explorer ?</h2>
-      <button class="btn btn-outline-primary m-2" onclick="showFinalResult('${maxType}','nord')">Nord</button>
-      <button class="btn btn-outline-warning m-2" onclick="showFinalResult('${maxType}','centre')">Centre</button>
-      <button class="btn btn-outline-success m-2" onclick="showFinalResult('${maxType}','sud')">Sud</button>
-    </div>`;
-  progressBar.style.width = "100%";
-}
-
-function showFinalResult(type, region) {
-  const res = resultsData[type][region];
-  container.innerHTML = `<div class="card shadow-lg p-4 text-center fade-slide">
-                           <h1>${res.title}</h1>
-                           <img src="${res.img}" class="img-fluid rounded mb-4" style="max-height:300px;object-fit:cover;">
-                           <p class="lead">Destinations suggérées : <b>${res.places}</b></p>
-                           <button onclick="location.reload()" class="btn btn-success mt-3">Recommencer</button>
-                         </div>`;
-}
-
-nextBtn.addEventListener('click', () => {
-  const selected = document.querySelector(`input[name="q${currentIndex}"]:checked`);
-  if(!selected) { alert('Veuillez choisir une réponse !'); return; }
-  answers[currentIndex] = selected.value;
-  currentIndex++;
+  // Bắt đầu
   showQuestion();
-});
-
-prevBtn.addEventListener('click', () => {
-  if(currentIndex > 0) currentIndex--;
-  showQuestion();
-});
-
-showQuestion();
 </script>
 {% endblock %}

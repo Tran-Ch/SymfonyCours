@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon espace{% endblock %}
+
+{% block body %}
+
+<div class="container mt-4">
+
+    <h1 class="mb-4" style="color: #2f4f4f; font-weight: bold;">
+        Mon espace personnel
+    </h1>
+
+    <p class="mb-4" style="font-size: 18px; color: #333;">
+        Retrouvez ici vos pages personnelles : histoires, profil et événements.
+    </p>
+
+    <!-- Khối các nút điều hướng -->
+    <div class="d-flex flex-column align-items-center gap-3" 
+         style="max-width: 400px; margin: 0 auto;">
+
+        {% if app.user %}
+
+            <!-- Liên kết Story cá nhân -->
+            <a class="btn w-100" href="{{ path('app_my_stories') }}">
+                Mes Stories
+            </a>
+
+            <!-- Liên kết chỉnh sửa profil -->
+            <a class="btn w-100" href="{{ path('app_profile_edit') }}">
+                Mon profil
+            </a>
+
+            <!-- Liên kết tới trang danh sách sự kiện để lựa chọn -->
+            <a class="btn w-100" href="{{ path('app_evenement_liste') }}">
+                Mes événements (choisir un événement)
+            </a>
+
+            <!-- Nút Déconnexion -->
+            <a class="btn w-100" href="{{ path('app_logout') }}">
+                Déconnexion
+            </a>
+
+        {% else %}
+            <p style="color: #444;">Veuillez vous connecter pour accéder à vos espaces.</p>
+            <a class="btn" href="{{ path('app_login') }}">Login</a>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

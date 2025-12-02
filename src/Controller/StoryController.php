@@ -5,21 +5,30 @@ namespace App\Controller;
 use App\Entity\Story;
 use App\Entity\Comment;
 use App\Entity\StoryLike;
+use App\Entity\Utilisateur;
 use App\Form\StoryType;
 use App\Form\CommentType;
 use App\Repository\StoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;   // <-- NEW
+use Symfony\Component\HttpFoundation\File\UploadedFile;              // <-- NEW
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;               // <-- NEW
 
 class StoryController extends AbstractController
 {
     #[Route('/story/new', name: 'app_story_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger                                  // <-- NEW
+    ): Response {
         $story = new Story();
+
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         // nếu user đã đăng nhập thì set mặc định là tác giả
@@ -44,6 +53,28 @@ class StoryController extends AbstractController
                     throw new \RuntimeException('Aucun utilisateur n\'est défini pour cette histoire.');
                 }
 
+                /** @var UploadedFile|null $imageFile */
+                $imageFile = $form->get('imageFile')->getData();
+
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename     = $slugger->slug($originalFilename);
+                    $newFilename      = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                    try {
+                        // Lưu vào public/Image (giống Evenement)
+                        $imageFile->move(
+                            $this->getParameter('kernel.project_dir').'/public/Image',
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Erreur lors de l\'upload de l\'image');
+                    }
+
+                    // ghi tên file vào Story (thuộc tính image)
+                    $story->setImage($newFilename);
+                }
+
                 $entityManager->persist($story);
                 $entityManager->flush();
 
@@ -52,7 +83,8 @@ class StoryController extends AbstractController
                 // sau khi đăng, chuyển về trang "mes histoires"
                 return $this->redirectToRoute('app_my_stories');
             } catch (\Exception $e) {
-                $this->addFlash('error',
+                $this->addFlash(
+                    'error',
                     'Une erreur est survenue lors de l\'enregistrement de l\'histoire : ' . $e->getMessage()
                 );
             }
@@ -67,8 +99,13 @@ class StoryController extends AbstractController
     }
 
     #[Route('/story/{id}/edit', name: 'app_story_edit', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, Story $story, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(
+        Request $request,
+        Story $story,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger                                  // <-- NEW
+    ): Response {
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         // chỉ tác giả hoặc admin mới được sửa
@@ -86,12 +123,33 @@ class StoryController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                /** @var UploadedFile|null $imageFile */
+                $imageFile = $form->get('imageFile')->getData();
+
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename     = $slugger->slug($originalFilename);
+                    $newFilename      = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('kernel.project_dir').'/public/Image',
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Erreur lors de l\'upload de l\'image');
+                    }
+
+                    $story->setImage($newFilename);
+                }
+
                 $entityManager->flush();
                 $this->addFlash('success', 'L\'histoire a été mise à jour avec succès !');
 
                 return $this->redirectToRoute('app_story_show', ['id' => $story->getId()]);
             } catch (\Exception $e) {
-                $this->addFlash('error',
+                $this->addFlash(
+                    'error',
                     'Une erreur est survenue lors de la mise à jour : ' . $e->getMessage()
                 );
             }
@@ -110,6 +168,7 @@ class StoryController extends AbstractController
     #[Route('/story/{id}', name: 'app_story_show', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function show(Story $story, Request $request, EntityManagerInterface $em): Response
     {
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         // Tạo form comment cho story này
@@ -142,6 +201,8 @@ class StoryController extends AbstractController
             'story'       => $story,
             'comments'    => $story->getComments(),
             'commentForm' => $commentForm->createView(),
+            // để Twig tiện dùng: list événements gắn với story (nếu cần)
+            'evenements'  => $story->getEvenements(),
         ]);
     }
 
@@ -149,6 +210,7 @@ class StoryController extends AbstractController
     #[Route('/story/{id}/like', name: 'app_story_like', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function like(Story $story, EntityManagerInterface $em): Response
     {
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
 
         if (!$user) {
@@ -177,23 +239,48 @@ class StoryController extends AbstractController
         return $this->redirectToRoute('app_story_show', ['id' => $story->getId()]);
     }
 
-    /* ---------- TRANG "MES HISTOIRES" CỦA USER ---------- */
+    /* ---------- TRANG "MES HISTOIRES" CỦA USER + ÉVÉNEMENTS ĐÃ CHỌN ---------- */
     #[Route('/mes-histoires', name: 'app_my_stories')]
     public function myStories(StoryRepository $storyRepository): Response
     {
+        /** @var Utilisateur|null $user */
         $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
+        // Các story của user (giữ nguyên)
         $stories = $storyRepository->findBy(
             ['utilisateur' => $user],
             ['id' => 'DESC']
         );
 
+        // ===== CHỈ LẤY ÉVÉNEMENTS MÀ USER ĐÃ GẮN VỚI MÌNH =====
+        // Quan hệ ManyToMany Utilisateur <-> Evenement
+        $eventsArray = $user->getEvenements()->toArray();
+
+        // Chia đều vào 3 cột cho giống layout A venir / Inscrit / Intéressé
+        $eventsUpcoming   = [];
+        $eventsRegistered = [];
+        $eventsInterested = [];
+
+        foreach ($eventsArray as $index => $event) {
+            $mod = $index % 3;
+            if ($mod === 0) {
+                $eventsUpcoming[] = $event;
+            } elseif ($mod === 1) {
+                $eventsRegistered[] = $event;
+            } else {
+                $eventsInterested[] = $event;
+            }
+        }
+
         return $this->render('story/my_stories.html.twig', [
-            'user'    => $user,
-            'stories' => $stories,
+            'user'             => $user,
+            'stories'          => $stories,
+            'eventsUpcoming'   => $eventsUpcoming,   // À venir
+            'eventsRegistered' => $eventsRegistered, // Inscrit
+            'eventsInterested' => $eventsInterested, // Intéressé
         ]);
     }
 

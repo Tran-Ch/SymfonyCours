@@ -160,7 +160,7 @@
   }
 
   .hero-text h1 {
-    color: rgb(139, 142, 80);
+    color: rgba(233, 235, 193, 1);
     font-size: clamp(22px, 4vw, 60px); /* responsive font */
     text-align: center;
     background-color: transparent;
@@ -565,70 +565,67 @@
 
     <!-- NAVBAR Bootstrap 5 custom -->
     <nav class="navbar navbar-expand-lg custom-navbar">
-      <div class="container-fluid justify-content-end">
+        <div class="container-fluid justify-content-end">
 
-        <!-- Search box -->
-        <form class="d-flex search-box me-3" role="search" onsubmit="handleSearch(); return false;">
-          <input class="form-control custom-input" type="search" placeholder="Recherche..." id="searchInput">
-          <button class="btn custom-btn" type="button" onclick="handleSearch()">Recherche</button>
-        </form>
+            <!-- Search box -->
+            <form class="d-flex search-box me-3" 
+                  role="search" 
+                  method="get" 
+                  action="{{ path('app_search') }}">
+              <input class="form-control custom-input" 
+                    type="search" 
+                    name="q"
+                    placeholder="Recherche..." 
+                    value="{{ app.request.query.get('q') }}">
+              <button class="btn custom-btn" type="submit">Recherche</button>
+            </form>
 
-        <!-- Toggler cho mobile -->
-        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+            <!-- Toggler cho mobile -->
+            <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <!-- Menu items -->
-        <div class="collapse navbar-collapse" id="mainNav">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <!-- Menu items -->
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
-            <li class="nav-item">
-                <a class="nav-link custom-link" href="{{ path('app_home') }}">Accueil</a>
-            </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-link" href="{{ path('app_home') }}">Accueil</a>
+                    </li>
 
-            <li class="nav-item">
-                <a class="nav-link custom-link" href="{{ path('app_apropos') }}">À propos de nous</a>
-            </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-link" href="{{ path('app_apropos') }}">À propos de nous</a>
+                    </li>
 
-            <li class="nav-item">
-                <a class="nav-link custom-link" href="{{ path('app_experience') }}">Expérience</a>
-            </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-link" href="{{ path('app_experience') }}">Expérience</a>
+                    </li>
 
-            <li class="nav-item">
-                <a class="nav-link custom-link" href="{{ path('app_story_public_list') }}">Histoires</a>
-            </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-link" href="{{ path('app_story_public_list') }}">Histoires</a>
+                    </li>
 
-            {# Nếu đã đăng nhập: hiện Story (trang cá nhân) + Logout #}
-            {% if app.user %}
-                <li class="nav-item">
-                    <a class="nav-link custom-link" href="{{ path('app_my_stories') }}">Story</a>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link custom-link" href="{{ path('app_profile_edit') }}">Mon profil</a>
-                </li>
+                    {% if app.user %}
+                        {# Chỉ giữ Mon espace, không còn Story/Profil/Logout #}
+                        <li class="nav-item">
+                            <a class="nav-link custom-link" href="{{ path('app_mon_espace') }}">Mon espace</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link custom-link" href="{{ path('app_login') }}">Login</a>
+                        </li>
+                    {% endif %}
 
-                <li class="nav-item">
-                    <a class="nav-link custom-link" href="{{ path('app_logout') }}">Déconnexion</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-link" href="#">Langue</a>
+                    </li>
 
-            {% else %}
-                {# Nếu chưa đăng nhập: chỉ hiện Login #}
-                <li class="nav-item">
-                    <a class="nav-link custom-link" href="{{ path('app_login') }}">Login</a>
-                </li>
-            {% endif %}
-
-            <li class="nav-item">
-                <a class="nav-link custom-link" href="#">Langue</a>
-            </li>
-
-        </ul>
+                </ul>
+            </div>
 
         </div>
-
-      </div>
     </nav>
+
 
   </header>
 
@@ -658,16 +655,6 @@
 
         lantern.appendChild(img);
         container.appendChild(lantern);
-      }
-    }
-
-    function handleSearch() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (query !== '') {
-        // sau này bạn có thể đổi sang route Symfony
-        alert('Tạm thời chưa có trang tìm kiếm. Từ khóa: ' + query);
-      } else {
-        alert('Veuillez saisir un mot-clé pour effectuer une recherche.');
       }
     }
 

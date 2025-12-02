@@ -1,25 +1,232 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de l'événement{% endblock %}
+{% block title %}Détails de l'histoire{% endblock %}
 
 {% block body %}
-    <h1>{{ evenement.nom }}</h1>
+<style>
+  .story-layout {
+    max-width: 1200px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 2fr 1.2fr;
+    gap: 24px;
+  }
 
-    <p><strong>Date :</strong> {{ evenement.dateDebut|date('d/m/Y H:i') }}</p>
-    <p><strong>Date de fin :</strong> {{ evenement.dateFin|date('d/m/Y H:i') }}</p>
-    <p><strong>Lieu :</strong> {{ evenement.lieu }}</p>
-    <p><strong>Catégorie :</strong> {{ evenement.categorie }}</p>
-    <p><strong>Prix :</strong> {{ evenement.prix }}€</p>
+  .story-main {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
 
-    {% if evenement.image %}
-        <p><img src="{{ asset('uploads/images/' ~ evenement.image) }}" alt="Image de l'événement" style="max-width:300px;"></p>
+  .story-main h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #304030;
+  }
+
+  .story-meta {
+    font-size: 13px;
+    color: #707c70;
+    margin-bottom: 16px;
+  }
+
+  .story-content {
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  /* Cột phải – événements */
+  .story-events {
+    background: #f8faf5;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  .story-events h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #305433;
+  }
+
+  .event-card {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+  }
+
+  .event-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+  }
+
+  .event-card-body {
+    padding: 10px 12px 12px 12px;
+  }
+
+  .event-card-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 0 6px 0;
+    color: #2f3b24;
+  }
+
+  .event-card-meta {
+    font-size: 12px;
+    color: #506050;
+    margin-bottom: 6px;
+  }
+
+  .event-card-lieu {
+    font-size: 12px;
+    color: #304030;
+    margin-bottom: 8px;
+  }
+
+  .event-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .event-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #d7e48e;
+    color: #304030;
+  }
+
+  .event-link {
+    font-size: 12px;
+  }
+
+  /* Commentaires */
+  .comments-block {
+    margin-top: 30px;
+  }
+
+  .comment-item {
+    border-bottom: 1px solid #e2e8dc;
+    padding: 10px 0;
+  }
+
+  .comment-meta {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 4px;
+  }
+
+  .comment-content {
+    font-size: 14px;
+  }
+
+  @media (max-width: 768px) {
+    .story-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="story-layout">
+  {# ==== CỘT TRÁI: STORY + COMMENT ==== #}
+  <section class="story-main">
+    <h1>Votre histoire</h1>
+
+    <p class="story-meta">
+      {% if story.utilisateur %}
+        Rédigée par un voyageur
+      {% endif %}
+      – #{{ story.id }}
+    </p>
+
+    <div class="story-content">
+      {{ story.contenu|nl2br }}
+    </div>
+
+    {# ----- Commentaires ----- #}
+    <div class="comments-block">
+      <h3 style="font-size:18px; margin-bottom:10px;">Commentaires</h3>
+
+      {% if comments is defined and comments|length > 0 %}
+        {% for comment in comments %}
+          <div class="comment-item">
+            <div class="comment-meta">
+              {% if comment.utilisateur is defined and comment.utilisateur %}
+                Par un utilisateur –
+              {% endif %}
+              {{ comment.date|date('d/m/Y H:i') }}
+            </div>
+            <div class="comment-content">
+              {{ comment.contenu|nl2br }}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted" style="font-size: 13px;">Aucun commentaire pour l’instant.</p>
+      {% endif %}
+
+      {# Formulaire d'ajout de commentaire #}
+      <div class="mt-3">
+        {{ form_start(commentForm) }}
+          {{ form_widget(commentForm) }}
+          <button class="btn btn-success mt-2">Publier mon commentaire</button>
+        {{ form_end(commentForm) }}
+      </div>
+    </div>
+  </section>
+
+  {# ==== CỘT PHẢI: ÉVÉNEMENTS LIÉS ==== #}
+  <aside class="story-events">
+    <h3>Événements inspirés par cette story</h3>
+
+    {% if evenements is defined and evenements|length > 0 %}
+      {% for evenement in evenements %}
+        <article class="event-card">
+          {% if evenement.image %}
+            {# Ảnh nằm trong public/Image #}
+            <img src="{{ asset('Image/' ~ evenement.image) }}"
+                 alt="{{ evenement.nom }}">
+          {% endif %}
+
+          <div class="event-card-body">
+            <p class="event-card-title">{{ evenement.nom }}</p>
+
+            <p class="event-card-meta">
+              📅
+              {{ evenement.dateDebut|date('d/m/Y') }}
+              {% if evenement.dateFin %}
+                – {{ evenement.dateFin|date('d/m/Y') }}
+              {% endif %}
+            </p>
+
+            <p class="event-card-lieu">
+              📍 {{ evenement.lieu }}
+            </p>
+
+            <div class="event-card-footer">
+              <span class="event-badge">
+                {{ evenement.categorie|title }}
+              </span>
+
+              <a href="{{ path('app_evenement_show', {id: evenement.id}) }}"
+                 class="btn btn-sm btn-outline-primary event-link">
+                Voir l’événement
+              </a>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    {% else %}
+      <p style="font-size: 13px; color:#555;">
+        Aucun événement n’est encore associé à cette story.
+      </p>
     {% endif %}
-
-    <a href="{{ path('app_evenement_liste') }}">← Retour à la liste</a>
-    <a href="{{ path('app_evenement_edit', {id: evenement.id}) }}">✏️ Modifier</a>
-
-    <form method="post" action="{{ path('app_evenement_delete', {id: evenement.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet événement ?');">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
-        <button class="btn btn-danger">🗑️ Supprimer</button>
-    </form>
+  </aside>
+</div>
 {% endblock %}

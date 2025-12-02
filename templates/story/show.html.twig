@@ -1,3 +1,4 @@
+{# templates/story/show.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Story{% endblock %}
@@ -25,6 +26,20 @@
                 </button>
             </form>
         </div>
+
+        {# === ẢNH STORY (NẾU CÓ) ===
+           Giả sử thuộc tính hình trong entity Story là "image"
+           Và file được lưu trong thư mục public/Image
+        #}
+        {% if story.image %}
+            <div class="text-center my-3">
+                <img src="{{ asset('Image/' ~ story.image) }}"
+                     alt="Image de l'histoire"
+                     class="img-fluid rounded shadow-sm"
+                     style="max-height:350px;object-fit:cover;">
+            </div>
+        {% endif %}
+
         <div class="card-body">
             <p class="card-text">{{ story.contenu|nl2br }}</p>
         </div>

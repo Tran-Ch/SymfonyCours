@@ -32,11 +32,6 @@ class QuizController extends AbstractController
                 ["val"=>"culture","label"=>"Histoires culturelles et culinaires 🍲"],
                 ["val"=>"relax","label"=>"Moments de détente luxueux 🛎️"]
             ]],
-            ["q"=>"Quel climat préférez-vous en voyage ?", "options"=>[
-                ["val"=>"adventure","label"=>"Le froid des montagnes ❄️"],
-                ["val"=>"culture","label"=>"Tempéré et agréable 🌤️"],
-                ["val"=>"relax","label"=>"Soleil, mer et sable ☀️"]
-            ]],
             ["q"=>"Quel type de nourriture cherchez-vous en voyage ?", "options"=>[
                 ["val"=>"adventure","label"=>"Plats insolites et épicés 🌶️"],
                 ["val"=>"culture","label"=>"Cuisine traditionnelle locale 🍛"],
@@ -47,21 +42,11 @@ class QuizController extends AbstractController
                 ["val"=>"culture","label"=>"2–4 jours tranquilles 🏮"],
                 ["val"=>"relax","label"=>"3–7 jours de détente 🌺"]
             ]],
-            ["q"=>"Quel moyen de transport préférez-vous ?", "options"=>[
-                ["val"=>"adventure","label"=>"Moto, jeep, petit bateau 🛵"],
-                ["val"=>"culture","label"=>"Autocar, train 🚂"],
-                ["val"=>"relax","label"=>"Avion, voiture privée ✈️"]
-            ]],
             ["q"=>"Quelle est votre plus grande crainte en voyage ?", "options"=>[
                 ["val"=>"adventure","label"=>"Un voyage ennuyeux 😐"],
                 ["val"=>"culture","label"=>"Manquer la culture locale ✍️"],
                 ["val"=>"relax","label"=>"Un service médiocre 🏚️"]
             ]],
-            ["q"=>"Si vous ne pouviez choisir qu’une expérience ?", "options"=>[
-                ["val"=>"adventure","label"=>"Randonnée, plongée, grottes 🏞️"],
-                ["val"=>"culture","label"=>"Marchés, gastronomie, artisanat 🎭"],
-                ["val"=>"relax","label"=>"Spa et coucher de soleil 🌅"]
-            ]]
         ];
 
         $results = [

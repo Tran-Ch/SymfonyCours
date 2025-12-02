@@ -2,6 +2,21 @@
 
 {% block title %}Mes histoires{% endblock %}
 
+{% block stylesheets %}
+    {# RẤT QUAN TRỌNG: giữ lại CSS của base #}
+    {{ parent() }}
+
+    <style>
+        /* ảnh sự kiện trong trang story */
+        .event-img {
+            width: 100%;
+            height: 180px;       /* chiều cao khung ảnh sự kiện */
+            object-fit: cover;
+            border-radius: 12px;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="container mt-4">
 
@@ -16,6 +31,7 @@
         </div>
     </div>
 
+    {# ===== LISTE DES STORIES DU USER ===== #}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Vos publications</h5>
         <a href="{{ path('app_story_new') }}" class="btn btn-sm btn-primary">
@@ -30,18 +46,28 @@
             {% for story in stories %}
                 <div class="col-md-4">
                     <div class="card h-100">
+
+                        {# ẢNH CỦA STORY (NẾU CÓ) #}
+                        {% if story.image %}
+                            <img src="{{ asset('Image/' ~ story.image) }}"
+                                 alt="Image de l'histoire"
+                                 class="card-img-top"
+                                 style="height:160px;object-fit:cover;border-radius:12px 12px 0 0;">
+                        {% endif %}
+
                         <div class="card-body d-flex flex-column">
                             <p class="card-text">
                                 {{ story.contenu|slice(0, 120) ~ (story.contenu|length > 120 ? '...' : '') }}
                             </p>
+
                             <div class="mt-auto d-flex justify-content-between align-items-center">
                                 <a href="{{ path('app_story_show', {id: story.id}) }}"
                                    class="btn btn-sm btn-outline-success">
                                     Voir
                                 </a>
+
                                 <div class="text-muted small">
-                                    ❤ {{ story.likesCount }} ·
-                                    {{ story.comments|length }} commentaires
+                                    ❤ {{ story.likesCount }} · {{ story.comments|length }} commentaires
                                 </div>
                             </div>
                         </div>
@@ -50,6 +76,79 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    {# BLOC ÉVÉNEMENTS — 3 cột #}
+    <h2 class="text-center mb-4" style="margin-top:40px;">Liste des événements</h2>
+
+    <div class="row text-center mb-5">
+
+        {# ===== COLONNE 1 : À venir ===== #}
+        <div class="col-md-4 mb-4">
+            <h6>A venir</h6>
+
+            {% for event in eventsUpcoming %}
+                <div class="mb-3">
+                    {% if event.image %}
+                        <img src="{{ asset('Image/' ~ event.image) }}" class="event-img" alt="{{ event.nom }}">
+                    {% endif %}
+
+                    <div style="font-size:12px;margin-top:4px;">
+                        <strong>{{ event.nom }}</strong><br>
+                        Début: {{ event.dateDebut|date('d/m/Y') }}<br>
+                        Fin: {{ event.dateFin|date('d/m/Y') }}<br>
+                        Lieu: {{ event.lieu }}
+                    </div>
+                </div>
+            {% else %}
+                <p style="font-size:12px;">Aucun événement à venir.</p>
+            {% endfor %}
+        </div>
+
+        {# ===== COLONNE 2 : Inscrit ===== #}
+        <div class="col-md-4 mb-4">
+            <h6>Inscrit</h6>
+
+            {% for event in eventsRegistered %}
+                <div class="mb-3">
+                    {% if event.image %}
+                        <img src="{{ asset('Image/' ~ event.image) }}" class="event-img" alt="{{ event.nom }}">
+                    {% endif %}
+
+                    <div style="font-size:12px;margin-top:4px;">
+                        <strong>{{ event.nom }}</strong><br>
+                        Début: {{ event.dateDebut|date('d/m/Y') }}<br>
+                        Fin: {{ event.dateFin|date('d/m/Y') }}<br>
+                        Lieu: {{ event.lieu }}
+                    </div>
+                </div>
+            {% else %}
+                <p style="font-size:12px;">Aucun événement pour l’instant.</p>
+            {% endfor %}
+        </div>
+
+        {# ===== COLONNE 3 : Intéressé ===== #}
+        <div class="col-md-4 mb-4">
+            <h6>Intéressé</h6>
+
+            {% for event in eventsInterested %}
+                <div class="mb-3">
+                    {% if event.image %}
+                        <img src="{{ asset('Image/' ~ event.image) }}" class="event-img" alt="{{ event.nom }}">
+                    {% endif %}
+
+                    <div style="font-size:12px;margin-top:4px;">
+                        <strong>{{ event.nom }}</strong><br>
+                        Début: {{ event.dateDebut|date('d/m/Y') }}<br>
+                        Fin: {{ event.dateFin|date('d/m/Y') }}<br>
+                        Lieu: {{ event.lieu }}
+                    </div>
+                </div>
+            {% else %}
+                <p style="font-size:12px;">Aucun événement pour l’instant.</p>
+            {% endfor %}
+        </div>
+
+    </div>
 
 </div>
 {% endblock %}
